@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.fangche</groupId>
-    <artifactId>FangCheGateway</artifactId>
+    <artifactId>Gateway</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>FangCheGateway</name>
-    <description>FangCheGateway</description>
+    <name>Gateway</name>
+    <description>Gateway</description>
     <url/>
     <licenses>
         <license/>
@@ -33,7 +33,7 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-gateway-mvc</artifactId>
+            <artifactId>spring-cloud-starter-gateway</artifactId>
         </dependency>
 
         <dependency>
