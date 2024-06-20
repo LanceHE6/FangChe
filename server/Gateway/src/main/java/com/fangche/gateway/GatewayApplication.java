@@ -20,6 +20,7 @@ public class GatewayApplication {
         RouteLocatorBuilder.Builder routes = builder.routes();
         routes.route("hello1", r -> r.path("/hello1").uri(service1URL));
         routes.route("user/get/{uid}", r -> r.path("/user/get/{uid}").uri(service1URL));
+        routes.route("user/register/sendCode", r -> r.path("/user/register/sendCode").uri(service1URL));
 
         return routes.build();
     }
