@@ -7,6 +7,19 @@ spring:
     username: root
     password: root
 
+  mail:
+    host: smtp.qq.com
+    username: fangche-official@qq.com
+    password: bjguudgalptgbdie
+    port: 587
+    default-encoding: UTF-8
+    properties:
+      mail:
+        smtp:
+          ssl:
+            enable: false
+            required: false
+
 server:
   port: 8081
 
