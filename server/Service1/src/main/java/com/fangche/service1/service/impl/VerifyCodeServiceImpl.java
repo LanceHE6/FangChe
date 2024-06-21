@@ -30,4 +30,12 @@ public class VerifyCodeServiceImpl implements VerifyCodeService {
             verifyCodeMapper.insert(verifyCode);
         }
     }
+    @Override
+    public VerifyCode selectByAccount(String account) {
+        return  verifyCodeMapper.selectOne(new QueryWrapper<VerifyCode>().eq("account", account));
+    }
+    @Override
+    public void update(VerifyCode verifyCode) {
+        verifyCodeMapper.updateById(verifyCode);
+    }
 }
