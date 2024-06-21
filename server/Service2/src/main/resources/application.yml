@@ -1,6 +1,27 @@
 spring:
   application:
     name: Service2
-
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/fangche?createDatabaseIfNotExist=true&serverTimezone=GMT%2B8&useSSL=true
+    username: root
+    password: 123456
+  servlet:
+    multipart:
+      max-file-size: 1204MB
+      max-request-size: 1024MB
 server:
   port: 8082
+
+
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    banner: false
+    db-config:
+      logic-delete-field: deleted
+      logic-not-delete-value: 0
+      logic-delete-value: 1
+
