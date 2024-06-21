@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/api/user")
 public class UserController {
     @Autowired
     private UserService userService;
@@ -18,5 +18,11 @@ public class UserController {
     @PostMapping("/register/sendCode")
     public Response sendRegisterCode(@RequestParam("account") String account) {
         return userService.sendRegisterVerifyCode(account);
+    }
+    @PostMapping("/register/verifyCode")
+    public Response verifyRegisterCode(@RequestParam("account") String account,
+                                       @RequestParam("verify_code") String verifyCode,
+                                       @RequestParam("password") String password) {
+        return userService.register(account, password, verifyCode);
     }
 }
