@@ -17,6 +17,7 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
     public void insertFill(MetaObject metaObject) {
         this.setFieldValByName("createdAt", new Date(), metaObject);
         this.setFieldValByName("updatedAt", new Date(), metaObject);
+        this.setFieldValByName("role", 1, metaObject);
     }
 
     /**
