@@ -33,7 +33,35 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Response register(String account, String password, String verifyCode) {
+        // 验证验证码
+        VerifyCode code = verifyCodeService.selectByAccount(account);
+        if (code == null || code.isUsed() ||!code.getCode().equals(verifyCode)) {
+            return new Response(400, "验证码错误", null);
+        }
+        // 获取当前时间
+        Date now = new Date();
 
+        // 计算过期时间（创建时间加上指定的分钟数） 5分钟过期
+        long expiryTimeMillis = code.getCreatedAt().getTime() + (5 * 60 * 1000);
+        Date expiryTime = new Date(expiryTimeMillis);
+
+        // 如果当前时间大于或等于过期时间，那么验证码就过期了
+        if (now.after(expiryTime) || now.equals(expiryTime)) {
+            return new Response(401, "验证码已过期", null);
+        }
+
+        // 验证码验证通过，执行注册逻辑
+        User user = new User();
+        user.setAccount(account);
+        user.setPassword(password);
+        user.setNickname(account);
+        userMapper.insert(user);
+
+        // 设置验证码已使用
+        code.setUsed(true);
+        verifyCodeService.update(code);
+
+//        System.out.println(code);
         Response response = new Response();
         response.setCode(200);
         response.setMsg("注册成功");
