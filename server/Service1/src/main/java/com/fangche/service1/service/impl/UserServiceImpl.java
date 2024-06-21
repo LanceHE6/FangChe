@@ -1,5 +1,6 @@
 package com.fangche.service1.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.fangche.service1.entity.Response;
 import com.fangche.service1.entity.User;
 import com.fangche.service1.entity.VerifyCode;
@@ -10,6 +11,8 @@ import com.fangche.service1.utils.EmailTemplate;
 import com.fangche.service1.utils.RandomNumber;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -70,6 +73,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Response sendRegisterVerifyCode(String account) {
+        // 检验账号是否被注册
+        User user = userMapper.selectOne(new QueryWrapper<User>().eq("account", account));
+        if (user != null) {
+            return new Response(400, "账号已被注册", null);
+        }
         //  生成验证码
         String code = RandomNumber.generateRandomNumber(6);
 
@@ -84,7 +92,7 @@ public class UserServiceImpl implements UserService {
         int status = emailService.sendHTMLMailMessage(account, subject, EmailTemplate.getVerifyCodeTemplate(code));
         Response response = new Response();
         if (status != 0) {
-            response.setCode(400);
+            response.setCode(500);
             response.setMsg("发送验证码邮件失败");
             return response;
         }
