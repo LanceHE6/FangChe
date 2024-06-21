@@ -35,7 +35,7 @@ public class VideoServerImp implements VideoServer {
         if (name!=null && !name.equals("")){
             queryWrapper = queryWrapper.like("name", name);
         }
-        if (timeLength!=-1){
+        if (timeLength>0){
             queryWrapper = queryWrapper.le("time_length",timeLength);
         }
         if (days!=null && !days.equals("")){

@@ -11,7 +11,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.ArrayList;
 import java.util.List;
 
-@RestController("/video")
+@RestController
+@RequestMapping("/api/video")
 public class VideoController {
     @Autowired
     private VideoServerImp videoServer;
