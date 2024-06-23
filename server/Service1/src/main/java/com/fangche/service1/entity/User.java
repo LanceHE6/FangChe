@@ -2,6 +2,7 @@ package com.fangche.service1.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.tangzc.mpe.autotable.annotation.Column;
 import com.tangzc.mpe.autotable.annotation.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,6 +15,7 @@ public class User extends BaseEntity{
     private String password;
     private String nickname;
     private String avatar;
+    @Column(length = 512)
     private String token;
 
     @TableField(fill = FieldFill.INSERT)
