@@ -6,4 +6,5 @@ public interface UserService {
     Response getUserInfo(String uid);
     Response register(String account, String password, String verifyCode);
     Response sendRegisterVerifyCode(String account);
+    Response login(String account, String password);
 }

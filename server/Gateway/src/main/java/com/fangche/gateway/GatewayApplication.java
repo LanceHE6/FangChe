@@ -22,6 +22,7 @@ public class GatewayApplication {
         routes.route("api/user/get/{uid}", r -> r.path("/api/user/get/{uid}").uri(service1URL));
         routes.route("api/user/register/sendCode", r -> r.path("/api/user/register/sendCode").uri(service1URL));
         routes.route("api/user/register/verifyCode", r -> r.path("/api/user/register/verifyCode").uri(service1URL));
+        routes.route("api/user/login", r -> r.path("/api/user/login").uri(service1URL));
 
         String service2URL = "http://127.0.0.1:8082";
 

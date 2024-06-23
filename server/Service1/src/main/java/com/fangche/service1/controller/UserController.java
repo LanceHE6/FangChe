@@ -25,4 +25,9 @@ public class UserController {
                                        @RequestParam("password") String password) {
         return userService.register(account, password, verifyCode);
     }
+    @PostMapping("/login")
+    public Response login(@RequestParam("account") String account,
+                          @RequestParam("password") String password) {
+        return userService.login(account, password);
+    }
 }

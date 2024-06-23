@@ -8,7 +8,9 @@ import com.fangche.service1.mapper.UserMapper;
 import com.fangche.service1.service.UserService;
 import com.fangche.service1.service.VerifyCodeService;
 import com.fangche.service1.utils.EmailTemplate;
+import com.fangche.service1.utils.JWTUtil;
 import com.fangche.service1.utils.RandomNumber;
+import com.fangche.service1.utils.SaltMD5Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -56,7 +58,8 @@ public class UserServiceImpl implements UserService {
         // 验证码验证通过，执行注册逻辑
         User user = new User();
         user.setAccount(account);
-        user.setPassword(password);
+        // 密码进行md加盐加密
+        user.setPassword(SaltMD5Util.generateSaltPassword(password));
         user.setNickname(account);
         userMapper.insert(user);
 
@@ -98,6 +101,24 @@ public class UserServiceImpl implements UserService {
         }
         response.setCode(200);
         response.setMsg("发送验证码邮件成功");
+        return response;
+    }
+
+    @Override
+    public Response login(String account, String password) {
+        User user = userMapper.selectOne(new QueryWrapper<User>().eq("account", account));
+        if (!SaltMD5Util.verifySaltPassword(password, user.getPassword())) {
+            return new Response(400, "账号或密码错误", null);
+        }
+        String token = JWTUtil.generateJwtToken(user);
+        user.setToken(token);
+
+        userMapper.updateById(user);
+
+        Response response = new Response();
+        response.setCode(200);
+        response.setMsg("登录成功");
+        response.setData(user);
         return response;
     }
 }
