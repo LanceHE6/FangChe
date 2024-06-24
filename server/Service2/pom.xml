@@ -42,8 +42,9 @@
 		<dependency>
 			<groupId>org.bytedeco</groupId>
 			<artifactId>javacv-platform</artifactId>
-			<version>1.5.10</version>
+			<version>1.5.9</version>
 		</dependency>
+
 
 		<dependency>
 			<groupId>com.tangzc</groupId>
@@ -68,8 +69,17 @@
 			<artifactId>joda-time</artifactId>
 			<version>2.12.7</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-mongodb</artifactId>
+		</dependency>
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <scope>test</scope>
+        </dependency>
 
-	</dependencies>
+    </dependencies>
 
 	<build>
 		<plugins>

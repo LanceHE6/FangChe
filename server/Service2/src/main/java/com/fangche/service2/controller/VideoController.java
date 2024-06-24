@@ -10,8 +10,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
-
-@RestController("/video")
+@RequestMapping("/video")
+@RestController
 public class VideoController {
     @Autowired
     private VideoServerImp videoServer;
@@ -39,7 +39,7 @@ public class VideoController {
     }
 
     @PutMapping("/put")
-    public Result videoAlterById(@RequestParam("id") String id, @RequestParam("name") String name) {
+    public Result videoAlterById(@RequestParam("id") Long id, @RequestParam("name") String name) {
         Boolean flag = videoServer.updateById(id, name);
         if (flag) {
             return Result.success();

@@ -7,6 +7,7 @@ import com.fangche.service2.Pojo.entity.Video;
 import com.fangche.service2.Server.VideoServer;
 
 
+import com.fangche.service2.Utility.SnowFlake;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,6 +28,9 @@ public class VideoServerImp implements VideoServer {
 
     @Autowired
     private VideoMapper videoMapper;
+
+
+
     //根据视频发布时间，视频长度，视频名称来动态查询视频
     @Override
     public List<Video> videoList(String name ,Long timeLength,String days){
@@ -59,14 +63,20 @@ public class VideoServerImp implements VideoServer {
         try {
             video.transferTo(dest);
             durationInSeconds= String.valueOf(getVideoDurationInSeconds(dest.getAbsolutePath()));
-             length = Long.parseLong(durationInSeconds);
+            int dotIndex = durationInSeconds.indexOf('.');
+            // 去掉小数点及其后面的部分
+            String integerStr = dotIndex != -1 ? durationInSeconds.substring(0, dotIndex) : durationInSeconds;
+            // 转换回整数（注意可能会抛出NumberFormatException，需要处理）
+             length = Long.parseLong(integerStr);
+
 
         } catch (IOException e) {
             e.printStackTrace();
             return false;
         }
+        SnowFlake snowFlake = new SnowFlake(1, 1);
         LocalDateTime dateTime = LocalDateTime.now();
-        String id = UUID.randomUUID().toString();
+        Long id = snowFlake.nextId();
         Video v = new Video();
         v.setUrl(url);
         v.setName(name);
@@ -79,7 +89,7 @@ public class VideoServerImp implements VideoServer {
     }
 
     @Override
-    public Boolean updateById(String id, String name) {
+    public Boolean updateById(Long id, String name) {
         Video video = new Video();
         LocalDateTime dateTime = LocalDateTime.now();
         video.setUpdateTime(dateTime);

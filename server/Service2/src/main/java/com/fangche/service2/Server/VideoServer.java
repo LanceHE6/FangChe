@@ -11,5 +11,5 @@ public interface VideoServer {
     public List<Video> videoList(String name ,Long timeLength,String days);
     public boolean videoAdd(MultipartFile video, String name);
 
-    Boolean updateById(String id, String name);
+    Boolean updateById(Long id, String name);
 }
