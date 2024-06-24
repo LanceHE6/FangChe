@@ -80,7 +80,7 @@ public class JWTUtil {
     /**
      *  从jwt中获取 载荷 信息
      */
-    private static Claims getClaimsFromJwt(String jwt) {
+    public static Claims getClaimsFromJwt(String jwt) {
         Claims claims = null;
         try {
             claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(jwt).getBody();
