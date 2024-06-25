@@ -85,7 +85,8 @@ public class JWTUtil {
         try {
             claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(jwt).getBody();
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("token过期");
+            return claims;
         }
         return claims;
     }
