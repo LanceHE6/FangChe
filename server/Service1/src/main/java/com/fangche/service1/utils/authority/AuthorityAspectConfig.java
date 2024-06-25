@@ -51,29 +51,34 @@ public class AuthorityAspectConfig {
         if (authorityAnnotation != null) {
             // 获取注解参数
             permissionType = authorityAnnotation.value();
-            System.out.println("Authority value: " + permissionType);
         }
 
         if (permissionType == Permission.NORMAL){
             // 执行真正的业务处理逻辑
-            if (request != null && authenticationService.baseAuthenticate(request)) {
+            if (request != null && authenticationService.baseAuthenticate(request) == 1) {
                 return joinPoint.proceed();
+            } else if (request != null && authenticationService.baseAuthenticate(request) == 0){
+                return new Response(303, "token已过期", null);
             } else {
-                return new Response(300, "鉴权不通过", null);
+                return new Response(301, "鉴权不通过", null);
             }
         }
         if (permissionType == Permission.AUTHOR){
             if (request != null && authenticationService.isAuthorAuthenticate(request)) {
                 return joinPoint.proceed();
+            } else if (request != null && authenticationService.baseAuthenticate(request) == 0){
+                return new Response(303, "token已过期", null);
             }
-            return new Response(301, "权限拒绝", null);
+            return new Response(302, "权限拒绝", null);
         }
         if (permissionType == Permission.ADMIN){
             if (request != null && authenticationService.isAdminAuthenticate(request)) {
                 return joinPoint.proceed();
+            } else if (request != null && authenticationService.baseAuthenticate(request) == 0){
+                return new Response(303, "token已过期", null);
             }
             return new Response(302, "权限拒绝", null);
         }
-        return new Response(300, "鉴权不通过", null);
+        return new Response(301, "鉴权不通过", null);
     }
 }
