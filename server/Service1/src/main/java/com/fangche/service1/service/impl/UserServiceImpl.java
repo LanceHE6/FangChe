@@ -11,6 +11,7 @@ import com.fangche.service1.utils.EmailTemplate;
 import com.fangche.service1.utils.JWTUtil;
 import com.fangche.service1.utils.RandomNumber;
 import com.fangche.service1.utils.SaltMD5Util;
+import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +35,24 @@ public class UserServiceImpl implements UserService {
         response.setMsg("success");
         response.setData(user);
         return response;
+    }
+
+    @Override
+    public Response info(String authorization) {
+        String token;
+        try {
+            token = (authorization.split(" "))[1];
+        } catch (Exception e) {
+            return null;
+        }
+        Claims claims = JWTUtil.getClaimsFromJwt(token);
+        if (claims == null){
+            return new Response(303, "token已过期,请重新登录", null);
+        }
+        Long id = (Long) claims.get("id");
+        QueryWrapper<User> wrapper = new QueryWrapper<>();
+        wrapper.eq("id", id).eq("token", token);
+        return new Response(200, "获取成功", userMapper.selectOne(wrapper));
     }
 
     @Override
