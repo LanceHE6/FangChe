@@ -37,8 +37,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             return -1;
         }
         Claims claims = JWTUtil.getClaimsFromJwt(token);
+        // token过期
         if (claims == null){
-            return -1;
+            return 0;
         }
         Long id = (Long) claims.get("id");
         QueryWrapper<User> wrapper = new QueryWrapper<>();
@@ -46,16 +47,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         User user = this.userMapper.selectOne(wrapper);
         if (user == null) {
             return -1;
-        }
-        // 判断token是否过期
-        Date created_at = (Date) claims.get("created_at");
-        Date now = new Date();
-        // 计算两个时间之间的差值（毫秒）
-        long diff = now.getTime() - created_at.getTime();
-
-        // 判断是否超过3天（3天 = 3 * 24 * 60 * 60 * 1000毫秒）
-        if (diff > 259200000) {
-            return 0;
         }
         return 1;
     }
