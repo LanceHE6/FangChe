@@ -15,7 +15,7 @@ public class User extends BaseEntity{
     private String password;
     private String nickname; // 昵称
     private String avatar; // 头像
-    private int sex; // 性别 0为女 1为男 -1为保密
+    private int gender; // 性别 0为女 1为男 -1为保密
     @Column(length = 512)
     private String signature; // 个性签名
     @Column(length = 512)
