@@ -1,7 +1,6 @@
 package com.fangche.service2;
 
 import com.fangche.service2.Pojo.entity.Option;
-import com.fangche.service2.Pojo.entity.Question;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

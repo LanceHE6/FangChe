@@ -9,4 +9,5 @@ import lombok.NoArgsConstructor;
 public class Option {
     private String text;
     private Boolean isCorrect;
+
 }

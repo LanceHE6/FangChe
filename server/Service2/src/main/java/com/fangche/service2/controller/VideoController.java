@@ -48,7 +48,7 @@ public class VideoController {
     }
 
     @DeleteMapping("/delete")
-    public Result deleteById(String id) {
+    public Result deleteById(Long id) {
         int flag = videoMapper.deleteById(id);
         if (flag == 1) {
             return Result.success();
