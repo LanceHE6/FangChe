@@ -1,13 +1,19 @@
 spring:
   application:
     name: Service1
+  # 静态资源访问
+  mvc:
+    static-path-pattern: /static/**
+  web:
+    resources:
+      static-locations: file:./static/
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://127.0.0.1:3307/fangche?createDatabaseIfNotExist=true&serverTimezone=GMT%2B8&useSSL=true
     #url: jdbc:mysql://100.10.10.4:3306/fangche?createDatabaseIfNotExist=true&serverTimezone=GMT%2B8&useSSL=true
     username: root
     password: root
-
+  # 邮件服务
   mail:
     host: smtp.qq.com
     username: fangche-official@qq.com
@@ -24,5 +30,5 @@ spring:
 server:
   port: 8081
 
-mybatis-plus:
-  mapper-locations:  classpath:mapper/*.xml
+#mybatis-plus:
+#  mapper-locations:  classpath:mapper/*.xml
