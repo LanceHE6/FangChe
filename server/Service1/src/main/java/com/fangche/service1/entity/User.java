@@ -11,13 +11,20 @@ import lombok.Setter;
 @Setter
 @Getter
 public class User extends BaseEntity{
-    private String account;
+    private String account; // 账号(邮箱)
     private String password;
-    private String nickname;
-    private String avatar;
+    private String nickname; // 昵称
+    private String avatar; // 头像
+    private int sex; // 性别 0为女 1为男 -1为保密
+    @Column(length = 512)
+    private String signature; // 个性签名
     @Column(length = 512)
     private String token;
 
     @TableField(fill = FieldFill.INSERT)
-    private int role;
+    private int role; // 权限
+
+    @Column(length = 1024)
+    private String introduction; // 简介
+
 }
