@@ -1,6 +1,7 @@
 package com.fangche.service1.service;
 
 import com.fangche.service1.entity.Response;
+import com.fangche.service1.entity.User;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -12,4 +13,5 @@ public interface UserService {
     Response sendRegisterVerifyCode(String account);
     Response login(String account, String password);
     Response setAvatar(Long uid, MultipartFile file) throws IOException;
+    Response updateUser(Long uid, String nickname, int gender, String signature, String introduction);
 }

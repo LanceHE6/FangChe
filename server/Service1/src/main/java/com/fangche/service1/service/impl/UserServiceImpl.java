@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Objects;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -190,6 +191,28 @@ public class UserServiceImpl implements UserService {
         data.put("path", StaticResourcesUtil.USER_AVATAR_UPLOAD_DIR + file.getOriginalFilename());
 
         return new Response(200, "上传成功", data);
+    }
+
+    @Override
+    public Response updateUser(Long uid, String nickname, int gender, String signature, String introduction) {
+        if (Objects.equals(nickname, "") &&gender == -2 && Objects.equals(signature, "") && Objects.equals(introduction, "")){
+            return new Response(400, "未修改任何信息", null);
+        }
+        User user = userMapper.selectOne(new QueryWrapper<User>().eq("id", uid));
+        if (!Objects.equals(nickname, "")) {
+            user.setNickname(nickname);
+        }
+        if (gender != -2) {
+            user.setGender(gender);
+        }
+        if (!Objects.equals(signature, "")) {
+            user.setSignature(signature);
+        }
+        if (!Objects.equals(introduction, "")) {
+            user.setIntroduction(introduction);
+        }
+        userMapper.updateById(user);
+        return new Response(200, "更新成功", user);
     }
 
 }

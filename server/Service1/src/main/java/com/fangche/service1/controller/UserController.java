@@ -2,6 +2,7 @@ package com.fangche.service1.controller;
 
 import com.fangche.service1.entity.Response;
 import com.fangche.service1.service.UserService;
+import com.fangche.service1.utils.authority.Authority;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -39,8 +40,18 @@ public class UserController {
         return userService.login(account, password);
     }
     @PostMapping("/set-avatar")
+    @Authority
     public Response setAvatar(@RequestParam("uid") Long uid,
                               @RequestParam("file") MultipartFile file) throws IOException {
         return userService.setAvatar(uid, file);
+    }
+    @PutMapping("/update")
+    @Authority
+    public Response update(@RequestParam("uid") Long uid,
+                           @RequestParam(value = "nickname", required = false, defaultValue = "") String nickname,
+                           @RequestParam(value = "gender", required = false, defaultValue = "-2") Integer gender,
+                           @RequestParam(value = "signature", required = false, defaultValue = "") String signature,
+                           @RequestParam(value = "introduction", required = false, defaultValue = "") String introduction) {
+        return userService.updateUser(uid, nickname, gender, signature, introduction);
     }
 }
