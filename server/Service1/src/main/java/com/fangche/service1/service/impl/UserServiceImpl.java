@@ -7,15 +7,16 @@ import com.fangche.service1.entity.VerifyCode;
 import com.fangche.service1.mapper.UserMapper;
 import com.fangche.service1.service.UserService;
 import com.fangche.service1.service.VerifyCodeService;
-import com.fangche.service1.utils.EmailTemplate;
-import com.fangche.service1.utils.JWTUtil;
-import com.fangche.service1.utils.RandomNumber;
-import com.fangche.service1.utils.SaltMD5Util;
+import com.fangche.service1.utils.*;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -37,6 +38,11 @@ public class UserServiceImpl implements UserService {
         return response;
     }
 
+    /**
+     * 获取用户信息
+     * @param authorization 请求头中的认证信息
+     * @return Response
+     */
     @Override
     public Response info(String authorization) {
         String token;
@@ -55,6 +61,13 @@ public class UserServiceImpl implements UserService {
         return new Response(200, "获取成功", userMapper.selectOne(wrapper));
     }
 
+    /**
+     * 注册
+     * @param account 邮箱
+     * @param password 密码
+     * @param verifyCode 验证码
+     * @return Response
+     */
     @Override
     public Response register(String account, String password, String verifyCode) {
         // 验证验证码
@@ -93,6 +106,11 @@ public class UserServiceImpl implements UserService {
         return response;
     }
 
+    /**
+     * 发送注册邮箱验证码
+     * @param account 邮箱
+     * @return Response
+     */
     @Override
     public Response sendRegisterVerifyCode(String account) {
         // 检验账号是否被注册
@@ -123,6 +141,12 @@ public class UserServiceImpl implements UserService {
         return response;
     }
 
+    /**
+     * 登录
+     * @param account 邮箱
+     * @param password 密码
+     * @return Response
+     */
     @Override
     public Response login(String account, String password) {
         User user = userMapper.selectOne(new QueryWrapper<User>().eq("account", account));
@@ -140,4 +164,32 @@ public class UserServiceImpl implements UserService {
         response.setData(user);
         return response;
     }
+
+    @Override
+    public Response setAvatar(Long uid, MultipartFile file) throws IOException {
+
+        if (file.isEmpty()) {
+            return new Response(400, "未选择文件", null);
+        }
+
+        try {
+            File filePath = StaticResourcesUtil.getUserAvatarPath(file.getOriginalFilename());
+            file.transferTo(filePath);
+        } catch (IOException e) {
+            return new Response(500, "上传失败", e.getMessage());
+        }
+
+        // 更新数据库
+        User user = userMapper.selectOne(new QueryWrapper<User>().eq("id", uid));
+        user.setAvatar(StaticResourcesUtil.USER_AVATAR_UPLOAD_DIR + file.getOriginalFilename());
+        userMapper.updateById(user);
+
+        HashMap<String, String> data = new HashMap<>();
+        data.put("id", String.valueOf(uid));
+        data.put("file_name", file.getOriginalFilename());
+        data.put("path", StaticResourcesUtil.USER_AVATAR_UPLOAD_DIR + file.getOriginalFilename());
+
+        return new Response(200, "上传成功", data);
+    }
+
 }

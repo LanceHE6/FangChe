@@ -5,6 +5,9 @@ import com.fangche.service1.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/user")
@@ -34,5 +37,10 @@ public class UserController {
     public Response login(@RequestParam("account") String account,
                           @RequestParam("password") String password) {
         return userService.login(account, password);
+    }
+    @PostMapping("/set-avatar")
+    public Response setAvatar(@RequestParam("uid") Long uid,
+                              @RequestParam("file") MultipartFile file) throws IOException {
+        return userService.setAvatar(uid, file);
     }
 }
