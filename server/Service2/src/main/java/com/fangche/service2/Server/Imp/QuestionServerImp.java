@@ -1,6 +1,7 @@
 package com.fangche.service2.Server.Imp;
 
 import com.fangche.service2.Pojo.dto.QuestionDto;
+import com.fangche.service2.Pojo.dto.Result;
 import com.fangche.service2.Pojo.entity.Question;
 import com.fangche.service2.Server.QuestionServer;
 import com.google.gson.Gson;
@@ -11,6 +12,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,18 +23,20 @@ public class QuestionServerImp implements QuestionServer {
     @Autowired
     private MongoTemplate mongoTemplate;
 
-    public  Boolean addFile(MultipartFile file) {
+    public Result addFile(MultipartFile file) {
+        if (file.isEmpty()) {
+            return Result.error("请上传文件");
+        }
         try {
             String str = new String(file.getBytes(), StandardCharsets.UTF_8);
             Gson gson = new Gson();
             QuestionDto[] questions = gson.fromJson(str, QuestionDto[].class);
             ArrayList<QuestionDto> list = new ArrayList<>(Arrays.asList(questions));
             mongoTemplate.insertAll(list);
-
-        }catch (Exception e){
-            return false;
+        } catch (Exception e) {
+            return Result.error("传入的不是有效的json文件");
         }
-        return true;
+        return Result.success();
     }
 
     @Override

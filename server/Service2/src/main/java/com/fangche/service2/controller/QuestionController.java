@@ -21,14 +21,7 @@ public class QuestionController {
     //添加题目
     @PostMapping("/add")
     public Result add(@RequestParam("file")MultipartFile file) {
-        if (file.isEmpty()){
-            return Result.error("请上传文件");
-        }
-        Boolean flag=questionServerImp.addFile(file);
-        if (!flag){
-            Result.error("传入的不是有效的json文件");
-        }
-        return Result.success();
+        return questionServerImp.addFile(file);
     }
 
     @GetMapping("/searchTypes")
