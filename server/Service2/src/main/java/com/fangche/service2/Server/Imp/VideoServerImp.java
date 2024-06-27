@@ -74,15 +74,10 @@ public class VideoServerImp implements VideoServer {
             e.printStackTrace();
             return false;
         }
-        SnowFlake snowFlake = new SnowFlake(1, 1);
-        LocalDateTime dateTime = LocalDateTime.now();
-        Long id = snowFlake.nextId();
+
         Video v = new Video();
         v.setUrl(url);
         v.setName(name);
-        v.setReleaseTime(dateTime);
-        v.setUpdateTime(dateTime);
-        v.setId(id);
         v.setTimeLength(length);
         int flag = videoMapper.insert(v);
         return flag == 1;
@@ -91,8 +86,6 @@ public class VideoServerImp implements VideoServer {
     @Override
     public Boolean updateById(Long id, String name) {
         Video video = new Video();
-        LocalDateTime dateTime = LocalDateTime.now();
-        video.setUpdateTime(dateTime);
         video.setId(id);
         video.setName(name);
         int i = videoMapper.updateById(video);
