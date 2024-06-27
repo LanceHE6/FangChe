@@ -24,11 +24,11 @@ public class UserController {
         String auth = request.getHeader("Authorization");
         return userService.info(auth);
     }
-    @PostMapping("/register/sendCode")
+    @PostMapping("/register/send-code")
     public Response sendRegisterCode(@RequestParam("account") String account) {
         return userService.sendRegisterVerifyCode(account);
     }
-    @PostMapping("/register/verifyCode")
+    @PostMapping("/register/verify-code")
     public Response verifyRegisterCode(@RequestParam("account") String account,
                                        @RequestParam("verify_code") String verifyCode,
                                        @RequestParam("password") String password) {
@@ -53,5 +53,16 @@ public class UserController {
                            @RequestParam(value = "signature", required = false, defaultValue = "") String signature,
                            @RequestParam(value = "introduction", required = false, defaultValue = "") String introduction) {
         return userService.updateUser(uid, nickname, gender, signature, introduction);
+    }
+
+    @PostMapping("/reset-password/send-code")
+    public Response sendResetPasswordCode(@RequestParam("account") String account) {
+        return userService.sendResetPswVerifyCode(account);
+    }
+    @PostMapping("/reset-password/verify-code")
+    public Response verifyResetPasswordCode(@RequestParam("account") String account,
+                                            @RequestParam("verify_code") String verifyCode,
+                                            @RequestParam("new_password") String newPassword) {
+        return userService.verifyResetPsw(account, newPassword, verifyCode);
     }
 }

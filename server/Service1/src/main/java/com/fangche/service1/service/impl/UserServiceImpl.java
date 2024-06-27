@@ -28,7 +28,6 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private VerifyCodeService verifyCodeService;
 
-
     @Override
     public Response  getUserInfo(String uid) {
         User user =  userMapper.selectById(uid);
@@ -166,8 +165,14 @@ public class UserServiceImpl implements UserService {
         return response;
     }
 
+    /**
+     *  设置头像
+     * @param uid 用户id
+     * @param file 头像文件
+     * @return Response
+     */
     @Override
-    public Response setAvatar(Long uid, MultipartFile file) throws IOException {
+    public Response setAvatar(Long uid, MultipartFile file) {
 
         if (file.isEmpty()) {
             return new Response(400, "未选择文件", null);
@@ -193,8 +198,21 @@ public class UserServiceImpl implements UserService {
         return new Response(200, "上传成功", data);
     }
 
+    /**
+     *  更新用户信息
+     * @param uid 用户id
+     * @param nickname 昵称
+     * @param gender 性别
+     * @param signature 个性签名
+     * @param introduction 简介
+     * @return Response
+     */
     @Override
-    public Response updateUser(Long uid, String nickname, int gender, String signature, String introduction) {
+    public Response updateUser(Long uid,
+                               String nickname,
+                               int gender,
+                               String signature,
+                               String introduction) {
         if (Objects.equals(nickname, "") &&gender == -2 && Objects.equals(signature, "") && Objects.equals(introduction, "")){
             return new Response(400, "未修改任何信息", null);
         }
@@ -213,6 +231,84 @@ public class UserServiceImpl implements UserService {
         }
         userMapper.updateById(user);
         return new Response(200, "更新成功", user);
+    }
+
+    /**
+     *  发送重置密码验证码
+     * @param account 邮箱
+     * @return Response
+     */
+    @Override
+    public Response sendResetPswVerifyCode(String account) {
+        // 检验账号是否被注册
+        User user = userMapper.selectOne(new QueryWrapper<User>().eq("account", account));
+        if (user == null) {
+            return new Response(400, "账号不存在", null);
+        }
+        //  生成验证码
+        String code = RandomNumber.generateRandomNumber(6);
+
+        VerifyCode verifyCode = new  VerifyCode();
+        verifyCode.setAccount(account);
+        verifyCode.setCode(code);
+        verifyCode.setUsed(false);
+        // 插入新的验证码,如果存在则更新
+        verifyCodeService.insert(verifyCode);
+
+        String subject = String.format("重置密码验证码: %S", code);
+        int status = emailService.sendHTMLMailMessage(account, subject, EmailTemplate.getResetPswVerifyCodeTemplate(code));
+        Response response = new Response();
+        if (status != 0) {
+            response.setCode(500);
+            response.setMsg("发送验证码邮件失败");
+            return response;
+        }
+        response.setCode(200);
+        response.setMsg("发送验证码邮件成功");
+        return response;
+    }
+
+    /**
+     *  验证重置密码的验证码
+     * @param account 账号
+     * @param password 新密码
+     * @param verifyCode 验证码
+     * @return Response
+     */
+    @Override
+    public Response verifyResetPsw(String account, String password, String verifyCode) {
+        // 验证验证码
+        VerifyCode code = verifyCodeService.selectByAccount(account);
+        if (code == null || code.isUsed() ||!code.getCode().equals(verifyCode)) {
+            return new Response(400, "验证码错误", null);
+        }
+        // 获取当前时间
+        Date now = new Date();
+
+        // 计算过期时间（创建时间加上指定的分钟数） 5分钟过期
+        long expiryTimeMillis = code.getCreatedAt().getTime() + (5 * 60 * 1000);
+        Date expiryTime = new Date(expiryTimeMillis);
+
+        // 如果当前时间大于或等于过期时间，那么验证码就过期了
+        if (now.after(expiryTime) || now.equals(expiryTime)) {
+            return new Response(401, "验证码已过期", null);
+        }
+
+        // 验证码验证通过，执行重置密码逻辑
+        User user = userMapper.selectOne(new QueryWrapper<User>().eq("account", account));
+        // 新密码进行md加盐加密
+        user.setPassword(SaltMD5Util.generateSaltPassword(password));
+        userMapper.updateById(user);
+
+        // 设置验证码已使用
+        code.setUsed(true);
+        verifyCodeService.update(code);
+
+//        System.out.println(code);
+        Response response = new Response();
+        response.setCode(200);
+        response.setMsg("重置密码成功");
+        return response;
     }
 
 }
