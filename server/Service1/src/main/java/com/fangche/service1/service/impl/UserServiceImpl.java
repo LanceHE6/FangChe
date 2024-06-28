@@ -9,6 +9,7 @@ import com.fangche.service1.service.UserService;
 import com.fangche.service1.service.VerifyCodeService;
 import com.fangche.service1.utils.*;
 import io.jsonwebtoken.Claims;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -167,12 +168,12 @@ public class UserServiceImpl implements UserService {
 
     /**
      *  设置头像
-     * @param uid 用户id
      * @param file 头像文件
+     * @param request HttpServletRequest
      * @return Response
      */
     @Override
-    public Response setAvatar(Long uid, MultipartFile file) {
+    public Response setAvatar(MultipartFile file, HttpServletRequest request) {
 
         if (file.isEmpty()) {
             return new Response(400, "未选择文件", null);
@@ -184,6 +185,8 @@ public class UserServiceImpl implements UserService {
         } catch (IOException e) {
             return new Response(500, "上传失败", e.getMessage());
         }
+
+        Long uid = UserUtil.getUserIdByRequest(request);
 
         // 更新数据库
         User user = userMapper.selectOne(new QueryWrapper<User>().eq("id", uid));
@@ -200,22 +203,23 @@ public class UserServiceImpl implements UserService {
 
     /**
      *  更新用户信息
-     * @param uid 用户id
      * @param nickname 昵称
      * @param gender 性别
      * @param signature 个性签名
      * @param introduction 简介
+     * @param request HttpServletRequest
      * @return Response
      */
     @Override
-    public Response updateUser(Long uid,
-                               String nickname,
+    public Response updateUser(String nickname,
                                int gender,
                                String signature,
-                               String introduction) {
+                               String introduction,
+                               HttpServletRequest request) {
         if (Objects.equals(nickname, "") &&gender == -2 && Objects.equals(signature, "") && Objects.equals(introduction, "")){
             return new Response(400, "未修改任何信息", null);
         }
+        Long uid = UserUtil.getUserIdByRequest(request);
         User user = userMapper.selectOne(new QueryWrapper<User>().eq("id", uid));
         if (!Objects.equals(nickname, "")) {
             user.setNickname(nickname);
@@ -230,6 +234,7 @@ public class UserServiceImpl implements UserService {
             user.setIntroduction(introduction);
         }
         userMapper.updateById(user);
+        user.setToken(null);
         return new Response(200, "更新成功", user);
     }
 
