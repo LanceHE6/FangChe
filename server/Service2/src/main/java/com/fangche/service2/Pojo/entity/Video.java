@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @Setter
 @Getter
 public class Video {
-    private String id;
+    private Long id;
     private String name;
     private String url;
     private Long timeLength;
