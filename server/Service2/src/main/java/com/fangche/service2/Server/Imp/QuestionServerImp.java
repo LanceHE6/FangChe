@@ -40,26 +40,28 @@ public class QuestionServerImp implements QuestionServer {
     }
 
     @Override
-    public List<Question> selectByType(String type) {
+    public Result selectByType(String type) {
         Query query = new Query();
         query.addCriteria(Criteria.where("type").is(type));
-        return mongoTemplate.find(query, Question.class);
+        List<Question> questions = mongoTemplate.find(query, Question.class);
+        return Result.success(questions);
     }
 
     @Override
-    public void deleteByType(String type) {
+    public Result deleteByType(String type) {
         Query query = new Query();
         query.addCriteria(Criteria.where("type").is(type));
         DeleteResult test = mongoTemplate.remove(query, "Question");
         System.out.println(test);
+        return Result.success(test);
     }
 
     @Override
-    public void deleteById(String id) {
+    public Result deleteById(String id) {
         Query query = new Query();
         query.addCriteria(Criteria.where("_id").is(id));
         DeleteResult test = mongoTemplate.remove(query, "Question");
         System.out.println(test);
-
+        return Result.success(test);
     }
 }

@@ -9,8 +9,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 
-@RequestMapping("/video")
 @RestController
+@RequestMapping("/api/video")
 public class VideoController {
     @Autowired
     private VideoServerImp videoServer;
@@ -23,7 +23,6 @@ public class VideoController {
                             @RequestParam(value = "days",required = false) String days) {
         return videoServer.videoList(name, timeLength, days);
     }
-
     @PostMapping("/add")
     public Result videoAdd(@RequestParam("video") MultipartFile video, @RequestParam("name") String name) {
         return videoServer.videoAdd(video, name);
@@ -31,7 +30,7 @@ public class VideoController {
 
     @PutMapping("/put")
     public Result videoAlterById(@RequestParam("id") Long id, @RequestParam("name") String name) {
-        return videoServer.updateById(id, name);
+        return  videoServer.updateById(id, name);
     }
 
     @DeleteMapping("/delete")

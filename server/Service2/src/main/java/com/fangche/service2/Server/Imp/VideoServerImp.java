@@ -26,18 +26,15 @@ public class VideoServerImp implements VideoServer {
 
     @Autowired
     private VideoMapper videoMapper;
-
-
     //根据视频发布时间，视频长度，视频名称来动态查询视频
     @Override
     public Result videoList(String name, Long timeLength, String days) {
         QueryWrapper<Video> queryWrapper = new QueryWrapper<>();
-
         if (name != null && !name.equals("")) {
             queryWrapper = queryWrapper.like("name", name);
         }
-        if (timeLength != -1) {
-            queryWrapper = queryWrapper.le("time_length", timeLength);
+        if (timeLength>0){
+            queryWrapper = queryWrapper.le("time_length",timeLength);
         }
         if (days != null && !days.equals("")) {
             LocalDateTime now = LocalDateTime.now();
@@ -67,7 +64,6 @@ public class VideoServerImp implements VideoServer {
             String integerStr = dotIndex != -1 ? durationInSeconds.substring(0, dotIndex) : durationInSeconds;
             // 转换回整数（注意可能会抛出NumberFormatException，需要处理）
             length = Long.parseLong(integerStr);
-
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -99,6 +95,15 @@ public class VideoServerImp implements VideoServer {
     }
 
     @Override
+    public Result deleteBatchIds(ArrayList<Integer> list) {
+        int flag = videoMapper.deleteBatchIds(list);
+        if (flag == 1) {
+            return Result.success();
+        }
+        return Result.error("删除失败");
+    }
+
+    @Override
     public Result deleteById(Long id) {
         int flag = videoMapper.deleteById(id);
         if (flag == 1) {
@@ -107,14 +112,6 @@ public class VideoServerImp implements VideoServer {
         return Result.error("删除失败");
     }
 
-    @Override
-    public Result deleteBatchIds(ArrayList<Integer> list) {
-        int flag = videoMapper.deleteBatchIds(list);
-        if (flag == 1) {
-            return Result.success();
-        }
-        return Result.error("删除失败");
-    }
 
 
 }
