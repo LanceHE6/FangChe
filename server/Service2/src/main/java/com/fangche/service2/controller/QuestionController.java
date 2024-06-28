@@ -32,20 +32,17 @@ public class QuestionController {
 
     @GetMapping("/searchQuestion")
     public Result searchByType(@RequestParam("type") String type){
-        List<Question> questions=questionServerImp.selectByType(type);
-        return Result.success(questions);
+        return questionServerImp.selectByType(type);
     }
     //删除套题
     @DeleteMapping("/deleteByType")
     public Result DeleteQuestions(@RequestParam("type") String type){
-        questionServerImp.deleteByType(type);
-        return Result.success();
+        return questionServerImp.deleteByType(type);
     }
     //删除某一道题
     @DeleteMapping("/deleteById")
     public Result DeleteQuestion(@RequestParam("id") String id){
-        questionServerImp.deleteById(id);
-        return Result.success();
+        return questionServerImp.deleteById(id);
     }
 
 

@@ -9,9 +9,9 @@ import java.util.List;
 public interface QuestionServer {
      Result addFile(MultipartFile file);
 
-    List<Question> selectByType(String type);
+     Result selectByType(String type);
 
-    void deleteByType(String type);
+    Result deleteByType(String type);
 
-    void deleteById(String id);
+    Result deleteById(String id);
 }
