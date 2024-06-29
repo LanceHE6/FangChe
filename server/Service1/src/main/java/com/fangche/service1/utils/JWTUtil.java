@@ -4,6 +4,7 @@ import com.fangche.service1.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -32,7 +33,7 @@ public class JWTUtil {
      * @return
      *      返回生成的jwt token
      */
-    public static String generateJwtToken(User user){
+    public static String generateJwtToken(User user, HttpServletRequest request){
 
         // 头部 map / Jwt的头部承载，第一部分
         // 可不设置 默认格式是{"alg":"HS256"}
@@ -51,6 +52,7 @@ public class JWTUtil {
         claims.put("nickname", user.getNickname());
         claims.put("role", user.getRole());
         claims.put("created_at", user.getCreatedAt());
+        claims.put("ip", request.getRemoteAddr());
 
         //标准中注册的声明 (建议但不强制使用)
         //一旦写标准声明赋值之后，就会覆盖了那些标准的声明
