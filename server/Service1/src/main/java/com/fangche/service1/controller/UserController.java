@@ -33,8 +33,8 @@ public class UserController {
         return userService.register(param.getAccount(), param.getPassword(), param.getVerify_code());
     }
     @PostMapping("/login")
-    public Response login(@Valid @RequestBody UserLoginParam param){
-        return userService.login(param.getAccount(), param.getPassword());
+    public Response login(@Valid @RequestBody UserLoginParam param, HttpServletRequest request){
+        return userService.login(param.getAccount(), param.getPassword(), request);
     }
     @PostMapping("/set-avatar")
     @Authority

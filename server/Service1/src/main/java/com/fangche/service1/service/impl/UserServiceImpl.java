@@ -149,20 +149,20 @@ public class UserServiceImpl implements UserService {
      * @return Response
      */
     @Override
-    public Response login(String account, String password) {
+    public Response login(String account, String password, HttpServletRequest request) {
         User user = userMapper.selectOne(new QueryWrapper<User>().eq("account", account));
         if (user==null || !SaltMD5Util.verifySaltPassword(password, user.getPassword())) {
             return new Response(400, "账号或密码错误", null);
         }
-        String token = JWTUtil.generateJwtToken(user);
-        user.setToken(token);
-
-        userMapper.updateById(user);
+        String token = JWTUtil.generateJwtToken(user,request);
 
         Response response = new Response();
         response.setCode(200);
         response.setMsg("登录成功");
-        response.setData(user);
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("token", token);
+        data.put("user", user);
+        response.setData(data);
         return response;
     }
 
@@ -234,7 +234,7 @@ public class UserServiceImpl implements UserService {
             user.setIntroduction(introduction);
         }
         userMapper.updateById(user);
-        user.setToken(null);
+
         return new Response(200, "更新成功", user);
     }
 

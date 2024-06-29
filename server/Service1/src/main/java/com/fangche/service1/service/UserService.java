@@ -10,7 +10,7 @@ public interface UserService {
     Response info(String authorization);
     Response register(String account, String password, String verifyCode);
     Response sendRegisterVerifyCode(String account);
-    Response login(String account, String password);
+    Response login(String account, String password, HttpServletRequest request);
     Response setAvatar(MultipartFile file, HttpServletRequest request);
     Response updateUser(String nickname, int gender, String signature, String introduction, HttpServletRequest request);
     Response sendResetPswVerifyCode(String account);
