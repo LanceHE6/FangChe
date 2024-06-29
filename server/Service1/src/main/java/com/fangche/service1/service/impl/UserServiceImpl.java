@@ -151,7 +151,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Response login(String account, String password) {
         User user = userMapper.selectOne(new QueryWrapper<User>().eq("account", account));
-        if (!SaltMD5Util.verifySaltPassword(password, user.getPassword())) {
+        if (user==null || !SaltMD5Util.verifySaltPassword(password, user.getPassword())) {
             return new Response(400, "账号或密码错误", null);
         }
         String token = JWTUtil.generateJwtToken(user);
@@ -284,7 +284,7 @@ public class UserServiceImpl implements UserService {
     public Response verifyResetPsw(String account, String password, String verifyCode) {
         // 验证验证码
         VerifyCode code = verifyCodeService.selectByAccount(account);
-        if (code == null || code.isUsed() ||!code.getCode().equals(verifyCode)) {
+        if (code == null || code.isUsed() || !code.getCode().equals(verifyCode)) {
             return new Response(400, "验证码错误", null);
         }
         // 获取当前时间
