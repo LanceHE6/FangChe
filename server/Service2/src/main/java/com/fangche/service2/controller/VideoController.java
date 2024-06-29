@@ -4,8 +4,7 @@ package com.fangche.service2.controller;
 import com.fangche.service2.Pojo.dto.Result;
 import com.fangche.service2.Pojo.dto.VideoFileAddVo;
 import com.fangche.service2.Server.Imp.VideoServerImp;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -28,8 +27,8 @@ public class VideoController {
         return videoServer.videoList(name, timeLength, days);
     }
     @PostMapping("/add")
-    public Result videoAdd(@RequestBody VideoFileAddVo video) {
-        return videoServer.videoAdd(video.getVideo(), video.getName());
+    public Result videoAdd(@RequestParam("video")   MultipartFile video,String name) {
+        return videoServer.videoAdd(video, name);
     }
 
     @PutMapping("/put")
@@ -38,7 +37,7 @@ public class VideoController {
     }
 
     @DeleteMapping("/delete")
-    public Result deleteById(@Valid @RequestBody Long id) {
+    public Result deleteById( @RequestBody Long id) {
         return videoServer.deleteById(id);
     }
 

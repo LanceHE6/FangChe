@@ -23,13 +23,11 @@ public class QuestionController {
     public Result add(@RequestParam("file")MultipartFile file) {
         return questionServerImp.addFile(file);
     }
-
     @GetMapping("/searchTypes")
     public Result searchTypes(){
         List<String> types = mongoTemplate.findDistinct(new Query(), "type", "Question", String.class);
         return Result.success(types);
     }
-
     @GetMapping("/searchQuestion")
     public Result searchByType(@RequestParam("type") String type){
         return questionServerImp.selectByType(type);
