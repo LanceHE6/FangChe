@@ -51,7 +51,6 @@
 			<version>2.11.0</version>
 		</dependency>
 
-
 		<dependency>
 			<groupId>com.tangzc</groupId>
 			<artifactId>mybatis-plus-ext-boot-starter</artifactId>
@@ -82,7 +81,6 @@
         <dependency>
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <scope>test</scope>
         </dependency>
 
     </dependencies>
