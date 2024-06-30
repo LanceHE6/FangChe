@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
-@RequestMapping("/question")
+@RequestMapping("/api/question")
 @RestController
 public class QuestionController {
     @Autowired

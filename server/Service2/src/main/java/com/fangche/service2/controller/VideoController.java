@@ -27,7 +27,7 @@ public class VideoController {
         return videoServer.videoList(name, timeLength, days);
     }
     @PostMapping("/add")
-    public Result videoAdd(@RequestParam("video")   MultipartFile video,String name) {
+    public Result videoAdd(@RequestParam("video")  MultipartFile video,@RequestParam("name")String name) {
         return videoServer.videoAdd(video, name);
     }
 
@@ -37,12 +37,12 @@ public class VideoController {
     }
 
     @DeleteMapping("/delete")
-    public Result deleteById( @RequestBody Long id) {
+    public Result deleteById( @RequestParam("id") Long id) {
         return videoServer.deleteById(id);
     }
 
     @DeleteMapping("/deleteBach")
-    public Result deleteBach(ArrayList<Integer> list) {
+    public Result deleteBach(@RequestParam("list") ArrayList<Integer> list) {
         return videoServer.deleteBatchIds(list);
     }
 }
