@@ -101,6 +101,12 @@
             <artifactId>hibernate-validator</artifactId>
             <scope>test</scope>
         </dependency>
+		<!--服务中心客户端依赖-->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+			<version>4.1.2</version>
+		</dependency>
 
     </dependencies>
 

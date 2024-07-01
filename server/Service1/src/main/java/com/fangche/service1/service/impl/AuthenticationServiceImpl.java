@@ -41,11 +41,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (claims == null){
             return 0;
         }
-        Long id = (Long) claims.get("id");
-        QueryWrapper<User> wrapper = new QueryWrapper<>();
-        wrapper.eq("id", id).eq("token", token);
-        User user = this.userMapper.selectOne(wrapper);
-        if (user == null) {
+        String ip = request.getRemoteAddr();
+        if (!Objects.equals(ip, claims.get("ip", String.class))){
             return -1;
         }
         return 1;

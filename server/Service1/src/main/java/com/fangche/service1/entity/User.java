@@ -18,8 +18,6 @@ public class User extends BaseEntity{
     private int gender; // 性别 0为女 1为男 -1为保密
     @Column(length = 512)
     private String signature; // 个性签名
-    @Column(length = 512)
-    private String token;
 
     @TableField(fill = FieldFill.INSERT)
     private int role; // 权限
