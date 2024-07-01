@@ -29,7 +29,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String token;
         try {
             String bearer = (authorization.split(" "))[0];
-            if (!Objects.equals(bearer, "bearer")){
+            if (!Objects.equals(bearer, "Bearer") && !Objects.equals(bearer, "bearer")){
                 return -1;
             }
             token = (authorization.split(" "))[1];
@@ -41,8 +41,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (claims == null){
             return 0;
         }
-        String ip = request.getRemoteAddr();
-        if (!Objects.equals(ip, claims.get("ip", String.class))){
+        // 比较session_id
+        Long sessionId = (Long) claims.get("session_id");
+        Long uid =  (Long) claims.get("id");
+        User user =  userMapper.selectById(uid);
+        if (user == null){
+            return -1;
+        }
+        if (!Objects.equals(sessionId, user.getSessionId())){
             return -1;
         }
         return 1;

@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService {
         }
         Long id = (Long) claims.get("id");
         QueryWrapper<User> wrapper = new QueryWrapper<>();
-        wrapper.eq("id", id).eq("token", token);
+        wrapper.eq("id", id);
         return new Response(200, "获取成功", userMapper.selectOne(wrapper));
     }
 
@@ -154,8 +154,11 @@ public class UserServiceImpl implements UserService {
         if (user==null || !SaltMD5Util.verifySaltPassword(password, user.getPassword())) {
             return new Response(400, "账号或密码错误", null);
         }
-        String token = JWTUtil.generateJwtToken(user,request);
-
+        // 时间戳作为sessionId
+        user.setSessionId(System.currentTimeMillis());
+        String token = JWTUtil.generateJwtToken(user);
+        // 更新sessionId
+        userMapper.updateById(user);
         Response response = new Response();
         response.setCode(200);
         response.setMsg("登录成功");
