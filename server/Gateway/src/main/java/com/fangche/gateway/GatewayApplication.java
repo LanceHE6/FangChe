@@ -23,6 +23,7 @@ public class GatewayApplication {
 
         return builder.routes()
                 .route("user_routes", r -> r.path("/api/user/**").uri(service1URL))
+                .route("course_routes", r -> r.path("/api/course/**").uri(service1URL))
                 .route("service1_static_resources_routes", r -> r.path("/static/user/**").uri(service1URL))
                 .route("video_routes", r -> r.path("/api/video/**").uri(service2URL))
                 .build();
