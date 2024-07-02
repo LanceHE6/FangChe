@@ -19,7 +19,8 @@ public class UserController {
     public Response getUserInfo(@PathVariable("uid") String uid) {
         return userService.getUserInfo(uid); // 调用UserService的getUserInfo方法
     }
-    @GetMapping("/info")
+    @GetMapping({"/info", "/auth"})
+    @Authority
     public Response info(HttpServletRequest request) {
         String auth = request.getHeader("Authorization");
         return userService.info(auth);
