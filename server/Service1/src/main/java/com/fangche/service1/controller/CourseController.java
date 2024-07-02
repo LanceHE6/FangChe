@@ -6,6 +6,7 @@ import com.fangche.service1.entity.requestParam.course.CourseSearchParam;
 import com.fangche.service1.service.CourseService;
 import com.fangche.service1.utils.authority.Authority;
 import com.fangche.service1.utils.authority.Permission;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -41,5 +42,28 @@ public class CourseController {
     @Authority(Permission.AUTHOR)
     public Response delCourse(@PathVariable("id") Long id) {
         return CourseService.deleteCourse(id);
+    }
+
+    /**
+     *  收藏课程
+     * @param id 课程id
+     * @param request HttpServletRequest
+     * @return Response
+     */
+    @PostMapping("/collect/{id}")
+    @Authority
+    public Response collectCourse(@PathVariable("id") Long id, HttpServletRequest request) {
+        return CourseService.collectCourse(id, request);
+    }
+    /**
+     *  取消收藏课程
+     * @param id 课程id
+     * @param request HttpServletRequest
+     * @return Response
+     */
+    @PostMapping("/collect/remove/{id}")
+    @Authority
+    public Response removeCollectCourse(@PathVariable("id") Long id, HttpServletRequest request) {
+        return CourseService.removeCollectCourse(id, request);
     }
 }
