@@ -6,7 +6,6 @@ import com.fangche.service1.utils.authority.Permission;
 import com.fangche.service2.Pojo.dto.Result;
 import com.fangche.service2.Server.Imp.VideoServerImp;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
