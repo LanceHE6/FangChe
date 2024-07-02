@@ -7,4 +7,5 @@ import com.fangche.service1.entity.requestParam.course.CourseSearchParam;
 public interface CourseService {
     Response addCourse(CourseAddParam param);
     Response searchCourse(CourseSearchParam param);
+    Response deleteCourse(Long id);
 }

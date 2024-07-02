@@ -90,4 +90,14 @@ public class CourseServiceImpl implements CourseService {
         data.put("page_size", param.getPageSize());
         return new Response(200, "查询成功", data);
     }
+
+    @Override
+    public Response deleteCourse(Long id) {
+        Course course = courseMapper.selectById(id);
+        if (course == null){
+            return new Response(400, "课程不存在", null);
+        }
+        courseMapper.deleteById(id);
+        return new Response(200, "删除成功", null);
+    }
 }

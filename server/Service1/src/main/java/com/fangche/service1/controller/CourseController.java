@@ -4,6 +4,8 @@ import com.fangche.service1.entity.Response;
 import com.fangche.service1.entity.requestParam.course.CourseAddParam;
 import com.fangche.service1.entity.requestParam.course.CourseSearchParam;
 import com.fangche.service1.service.CourseService;
+import com.fangche.service1.utils.authority.Authority;
+import com.fangche.service1.utils.authority.Permission;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +16,7 @@ public class CourseController {
     @Autowired
     private CourseService CourseService;
     @PostMapping("/add")
+    @Authority(Permission.AUTHOR)
     public Response addCourse(@Valid @RequestBody CourseAddParam param) {
         return CourseService.addCourse(param);
     }
@@ -33,5 +36,10 @@ public class CourseController {
         param.setName(name);
         param.setTeacher(teacher);
         return CourseService.searchCourse(param);
+    }
+    @DeleteMapping("/del/{id}")
+    @Authority(Permission.AUTHOR)
+    public Response delCourse(@PathVariable("id") Long id) {
+        return CourseService.deleteCourse(id);
     }
 }
