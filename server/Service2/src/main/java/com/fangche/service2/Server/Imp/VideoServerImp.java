@@ -6,6 +6,7 @@ import com.fangche.service2.Mapper.VideoMapper;
 import com.fangche.service2.Pojo.dto.Result;
 import com.fangche.service2.Pojo.entity.Video;
 import com.fangche.service2.Server.VideoServer;
+import jakarta.servlet.ServletOutputStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -75,8 +76,9 @@ public class VideoServerImp implements VideoServer {
         v.setName(name);
         v.setTimeLength(length);
         int flag = videoMapper.insert(v);
+
         if (flag == 1) {
-            Result.success();
+            return Result.success();
         }
         return Result.error("插入失败");
     }

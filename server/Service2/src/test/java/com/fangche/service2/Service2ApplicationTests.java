@@ -16,6 +16,7 @@ class Service2ApplicationTests {
 
 	@Test
 	void contextLoads() {
+
 //		DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
 //		DateTime dateTime=new DateTime();//当前时间
 //

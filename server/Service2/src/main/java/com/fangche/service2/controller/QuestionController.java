@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
-@RequestMapping("/question")
+@RequestMapping("/api/question")
 @RestController
 public class QuestionController {
     @Autowired
@@ -26,14 +26,12 @@ public class QuestionController {
     public Result add(@RequestParam("file")MultipartFile file) {
         return questionServerImp.addFile(file);
     }
-
     @GetMapping("/searchTypes")
     @Authority
     public Result searchTypes(){
         List<String> types = mongoTemplate.findDistinct(new Query(), "type", "Question", String.class);
         return Result.success(types);
     }
-
     @GetMapping("/searchQuestion")
     @Authority
     public Result searchByType(@RequestParam("type") String type){

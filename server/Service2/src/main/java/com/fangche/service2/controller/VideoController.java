@@ -6,6 +6,7 @@ import com.fangche.service1.utils.authority.Permission;
 import com.fangche.service2.Pojo.dto.Result;
 import com.fangche.service2.Server.Imp.VideoServerImp;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,6 +18,7 @@ public class VideoController {
     @Autowired
     private VideoServerImp videoServer;
 
+
     //videoList是根据条件查询，如：发布时间查询，视频名称查询，视频时长
     @GetMapping("/list")
     @Authority
@@ -25,7 +27,6 @@ public class VideoController {
                             @RequestParam(value = "days",required = false) String days) {
         return videoServer.videoList(name, timeLength, days);
     }
-
     @PostMapping("/add")
     @Authority(Permission.AUTHOR)
     public Result videoAdd(@RequestParam("video") MultipartFile video, @RequestParam("name") String name) {
