@@ -61,8 +61,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      */
     @Override
     public boolean isAuthorAuthenticate(HttpServletRequest request) {
-        if (baseAuthenticate(request) != 1){
+        System.out.println(baseAuthenticate(request));
+        if (baseAuthenticate(request) == 1){
             User user = getUser(request);
+            System.out.println(user);
             return user != null && user.getRole() > 1;
         }
         return false;
@@ -75,7 +77,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      */
     @Override
     public boolean isAdminAuthenticate(HttpServletRequest request){
-        if (baseAuthenticate(request) != 1){
+        if (baseAuthenticate(request) == 1){
             User user = getUser(request);
             return user != null && user.getRole() == 3;
         }
@@ -101,7 +103,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
         Long id = (Long) claims.get("id");
         QueryWrapper<User> wrapper = new QueryWrapper<>();
-        wrapper.eq("id", id).eq("token", token);
+        wrapper.eq("id", id);
         return this.userMapper.selectOne(wrapper);
     }
 }
