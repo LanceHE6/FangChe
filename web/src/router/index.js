@@ -1,5 +1,7 @@
 import {createRouter,createWebHashHistory} from "vue-router";
 import main from "../views/main.vue";
+import user from "../views/userCenter.vue";
+import login from "../views/login.vue";
 
 const routes=[
     {
@@ -11,27 +13,19 @@ const routes=[
     {
         path: "/user",
         name:"user",
-        component: ()=>import("../views/userCenter.vue"),
+        component: user,
+
+    },
+    {
+        path: "/login",
+        name:"login",
+        component: login,
 
     },
     {
       path: "/evaluation"  ,
         name: "evaluation",
         component:()=>import('../views/evaluation.vue'),
-    },
-    {
-        // path后面“/:‘name’”为key
-        path: "/login",
-        name:"login",
-        // 异步加载
-        component:()=>import('../views/login.vue'),
-        // // redirect:"/login/00",
-        // // 重定向默认显示页面
-        // children:[{
-        //
-        // //  子导航to时要写全路径（包括父路径）
-        //     //     二级导航中的path没有“/”
-        // }]
     },
     {
         path: "/study",
