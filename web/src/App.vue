@@ -4,7 +4,7 @@
 </script>
 
 <template>
-  <div class="top">
+  <div id="top">
   <nav>
   <router-link to="/"> 首页</router-link>
     <router-link to="/study">学习</router-link>
@@ -32,7 +32,7 @@
 </template>
 
 <style scoped>
-.top{
+#top{
   position: fixed;
   top: 0;
   width: 100vw;
@@ -42,6 +42,7 @@
   justify-content: center;
   align-items: center;
   font-size: 3vh;
+  z-index: 9999;
 }
 .user{
   display: flex;

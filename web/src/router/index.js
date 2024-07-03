@@ -12,7 +12,28 @@ const routes=[
         path: "/user",
         name:"user",
         component: ()=>import("../views/userCenter.vue"),
-
+        children: [
+            {
+                path: '/one',
+                name:'myClass',
+                component: ()=>import('../components/one.vue'),
+            },
+            {
+                path: '/two',
+                name: 'myTest',
+                component:()=>import('../components/two.vue'),
+            },
+            {
+                path: '/three',
+                name: 'personSet',
+                component: () => import('../components/three.vue')
+            },
+            {
+                path: '/four',
+                name: 'safeSet',
+                component:()=>import('../components/four.vue'),
+            }
+        ]
     },
     {
       path: "/evaluation"  ,
@@ -49,7 +70,8 @@ const routes=[
                 name: "studyPath",
                 component:()=>import('../views/studyPath.vue'),
             }]
-    }
+    },
+
 
 ]
 
