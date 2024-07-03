@@ -1,248 +1,339 @@
 <script setup>
-import {reactive, ref} from "vue";
+import { User, Lock } from '@element-plus/icons-vue'
+import { ref } from 'vue'
+import { ElMessage } from "element-plus";
+//调用后台接口完成注册
+
+const isLogin = ref(true)
+const isRegister = ref(false)
+const isRecet = ref(false)
+//定义数据模型
+const registerData = ref({
+  account:'',
+  verify_code:'',
+  password:'',
+})
+
+
+//定义表单校验规则
+const rules = ref({
+  account:[
+    {required:true,massage:'请输入邮箱地址',trigger:'blur'},
+    {min:5,max:20,message:'请输入5~20位非空字符',trigger:'blur'}
+  ],
+  verify_code:[
+    {required:true,massage:'请输入验证码',trigger:'blur'},
+    {min:6,max:6,message:'请输入6位验证码',trigger:'blur'}
+  ],
+  password:[
+    {required:true,massage:'请输入密码',trigger:'blur'},
+    {min:5,max:20,message:'请输入5~20位非空字符',trigger:'blur'}
+  ],
+})
+
+
+const resetPassword = ref({
+  account:'',
+  new_password:'',
+  verify_code:'',
+})
+
+const rules2 = ref({
+  account:[
+    {required:true,massage:'请输入邮箱地址',trigger:'blur'},
+    {min:5,max:20,message:'请输入5~20位非空字符',trigger:'blur'}
+  ],
+  new_password:[
+    {required:true,massage:'请输入新密码',trigger:'blur'},
+    {min:5,max:20,message:'请输入5~20位非空字符',trigger:'blur'}
+  ],
+  verify_code:[
+    {required:true,massage:'请输入验证码',trigger:'blur'},
+    {min:6,max:6,message:'请输入6位验证码',trigger:'blur'}
+  ],
+})
+
+
+// 客户端的邮箱地址是用户输入的
+// 使用async函数来发送POST请求
+// 调用async函数发送验证码
+
+//注册申请验证码函数
+//import {userApplyService} from '@/api/user.js'
+async function apply() {
+  console.log(registerData.value);
+  try {
+    const data = registerData.value;
+
+    // 发送POST请求到后端API
+    const response = await axios.post('/api/user/register/send-code', {
+      account: data.account
+    });
+
+    // 根据后端返回的code判断请求是否成功
+    if (response.data.code === 200) {
+      // 成功
+      ElMessage.success( '申请成功');
+    } else {
+      // 失败
+      ElMessage.error( '申请失败: 未知错误');
+    }
+  } catch (error) {
+    // 处理错误
+    ElMessage.error('发生错误: ' + error.message);
+  }
+}
+
+
+//注册函数
+import {userRegisterService} from '@/api/user.js'
+const register = async () => {
+  console.log(registerData.value)
+  //registerData是一个响应式对象，调用时现需要加上.value
+  let result = await userRegisterService(registerData.value);
+  console.log(result.data)
+  if(result.data.code == 200) {
+    //成功
+    ElMessage.success('注册成功')
+
+  }else{
+    //失败
+    ElMessage.error('注册失败')
+
+  }
+}
+
+//重置密码的申请验证码函数
+async function reapply() {
+  console.log(resetPassword.value);
+  try {
+    const data = resetPassword.value;
+
+    // 发送POST请求到后端API
+    const response = await axios.post('/api/user/reset-password/send-code', {
+      account: data.account
+    });
+
+    // 根据后端返回的code判断请求是否成功
+    if (response.data.code === 200) {
+      // 成功
+      ElMessage.success( '申请成功');
+    } else {
+      // 失败
+      ElMessage.error( '申请失败: 未知错误');
+    }
+  } catch (error) {
+    // 处理错误
+    ElMessage.error('发生错误: ' + error.message);
+  }
+}
+
+
+//重置密码的验证码验证函数
+import {resetPasswordService} from '@/api/user.js'
+const reset = async () => {
+  console.log(resetPassword.value)
+  //registerData是一个响应式对象，调用时现需要加上.value
+  let result = await resetPasswordService(resetPassword.value);
+  console.log(result.data)
+  if (result.data.code == 200) {
+    //成功
+    ElMessage.success('重置成功')
+
+  } else {
+    //失败
+    ElMessage.error('重置失败')
+  }
+
+}
+
+
+
+//登录函数
+import {userLoginService} from '@/api/user.js'
 import axios from "axios";
-import {useRouter} from "vue-router";
-const router = useRouter();
-let dialogFormVisible = ref(false)
-const user =reactive({
-  account:"",
-  password:""
-})
-const login =async()=>{
-  console.log(user)
-
-  let result =await axios.post("/api/user/login",{
-    account:user.account,
-    password:user.password,
-  });
+import router from "@/router/index.js";
+const login = async() =>{
+  console.log(registerData.value)
+  //调用接口完成登录
+  let result = await userLoginService(registerData.value);
   console.log(result)
-  if(result.data.code==200){
-    // console.log("登录成功")
-    await router.push('/')
+  if(result.data.code == 200){
+
+    ElMessage.success('登录成功')
+    await router.push("/")
+
+  }else{
+    alert('账号或者密码错误，登录失败')
   }
-  else {
-    console.log("登录失败")
-    alert("登录失败")
-  }
-  user.password=''
-  user.account=''
 }
 
-const form = reactive({
-  account: "",
-  newpassword:"",
-  verifycode:"",
-  delivery: false,
-  type: [],
-  resource: '',
-  desc: '',
-})
-const submitNews=async()=>{
-  console.log(form)
-  let result =await axios.post("/api/user/reset-password/verify-code",{
-    account:form.account,
-    new_password:form.newpassword,
-    verify_code:form.verifycode,
-  });
-  console.log(result)
-  if(result.data.code==200){
-    console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-
+//定义函数，清空数据模型
+const clearRegisterData = () =>{
+  registerData.value = {
+    account:'',
+    verify_code:'',
+    password:''
   }
-  else if(result.data.code==400){
-    alert("验证码错误")
-    console.log("bbbbbbbbbbbbbbbbbbbbbb")
-  }
-  // dialogFormVisible=false
-
-  window.location.reload()
 }
-const sendyan=async()=>{
-  console.log(form)
-  let result =await axios.post("/api/user/reset-password/send-code",{
-    account:form.account,
-  });
-  console.log(result)
-  if(result.data.code==200){
-    console.log("发送成功")
-  }
 
-}
 </script>
-
-<script>
-import { reactive } from 'vue';
-import axios from 'axios';
-
-export default {
-  setup() {
-    const user = reactive({
-      email: "",
-      password: ""
-    });
-
-    const errors = reactive({
-      email: null,
-      password: null
-    });
-
-    const register = async () => {
-
-      errors.email = null;
-      errors.password = null;
-
-
-      if (user.email === '') {
-        errors.email = '邮箱不能为空';
-        return;
-      }
-
-      if (user.password === '') {
-        errors.password = '密码不能为空';
-        return;
-      }
-
-      try {
-        let result = await axios.post("/api/user/register", user);
-        if (result.data.code == 200) {
-          console.log("注册成功");
-        } else {
-          console.log("注册失败");
-        }
-      } catch (error) {
-        console.log("发生错误", error);
-
-      }
-    };
-
-    return {
-      user,
-      errors,
-      register
-    };
-  }
-}
-</script>
-
-
-
 
 
 <template>
-  <!--  <p>{{$route}}</p>-->
-  <div class="back">
+  <el-row class="login-page">
+    <el-col :span="12" class="bg"></el-col>
+    <el-col :span="6" :offset="3" class="form">
 
-    <div class="left">
-      <img src="@/imgs/1.webp">
-    </div>
-    <div class="right">
-      <el-divider class="right-center">
-        <el-form class="Rcenter">
-          <h2 style="margin-left: 1vw;color: mediumslateblue">欢迎登录方车</h2>
+      <!-- 注册表单 -->
+      <el-form ref="form" size="large" autocomplete="off" v-if="isRegister" :model="registerData" :rules="rules">
+        <el-form-item>
+          <h1>注册</h1>
+        </el-form-item>
+        <el-form-item prop="account">
+          <el-input :prefix-icon="User" placeholder="请输入注册邮箱" v-model="registerData.account"></el-input>
+        </el-form-item>
+        <el-form-item prop="verify_code">
+          <el-input :prefix-icon="Lock" type="verify_code" placeholder="请点击验证按钮获取验证码" v-model="registerData.verify_code"></el-input>
+        </el-form-item>
+        <!-- 申请发送邮箱验证码按钮 -->
+        <el-form-item>
+          <el-button class="button" type="primary" auto-insert-space @click="apply">
+            验证
+          </el-button>
+        </el-form-item>
+        <el-form-item prop="password">
+          <el-input :prefix-icon="Lock" type="password" placeholder="请输入密码" v-model="registerData.password"></el-input>
+        </el-form-item>
+        <!-- 注册按钮 -->
+        <el-form-item>
+          <el-button class="button" type="primary" auto-insert-space @click="register">
+            注册
+          </el-button>
+        </el-form-item>
+        <el-form-item class="flex">
+          <el-link type="info" :underline="false" @click="isRegister = false;isLogin = true;clearRegisterData()">
+            ← 返回
+          </el-link>
+        </el-form-item>
+      </el-form>
 
-          <br>
-          <el-input
-              v-model="user.account"
-              style="width: 16vw;height: 5vh"
-              placeholder="请输入账号"
-              clearable
-          />
-          <br>
 
-          <el-input
-              v-model="user.password"
-              style="width: 16vw;height: 5vh;margin-top: 2vh"
-              type="password"
-              placeholder="请输入密码"
-              show-password
-          />
-          <br>
-          <el-button type="info" @click="login">登录</el-button>
-          <el-button style="margin-left: 2vw" @click="register">注册</el-button>
-        </el-form>
+      <!-- 登录表单 -->
+      <el-form ref="form" size="large" autocomplete="off" v-if="isLogin" :model="registerData" :rules="rules">
+        <el-form-item>
+          <h1>登录</h1>
+        </el-form-item>
+        <el-form-item prop="account">
+          <el-input :prefix-icon="User" placeholder="请输入邮箱" v-model="registerData.account"></el-input>
+        </el-form-item>
+        <el-form-item prop="password">
+          <el-input :prefix-icon="Lock" type="password" placeholder="请输入密码" v-model="registerData.password"></el-input>
+        </el-form-item>
 
+        <!-- 忘记密码按钮 -->
+        <el-form-item>
+          <el-button class="button" type="primary" auto-insert-space @click="isRecet = true;isLogin = false;clearRegisterData()">忘记密码</el-button>
+        </el-form-item>
 
-      </el-divider>
-      <div>
-        <el-button class="re-password" plain @click="dialogFormVisible = true">
-          忘记密码？
-        </el-button>
-      </div>
-      <el-dialog v-model="dialogFormVisible" title="重置密码" width="500">
-        <el-form :model="form">
-          <el-form-item label="请输入邮箱" :label-width="formLabelWidth">
-            <el-input v-model="form.account" autocomplete="off" />
-          </el-form-item>
+        <!-- 登录按钮 -->
+        <el-form-item>
+          <el-button class="button" type="primary" auto-insert-space @click="login">登录</el-button>
+        </el-form-item>
+
+        <el-form-item class="flex">
+          <el-link type="info" :underline="false" @click="isRegister = true;isLogin = false;clearRegisterData()">
+            注册 →
+          </el-link>
+        </el-form-item>
+
+      </el-form>
+
+      <!-- 重置密码表单 -->
+      <el-form ref="form" size="large" autocomplete="off" v-if="isRecet" :model="resetPassword" :rules="rules2">
+        <el-form-item>
+          <h1>重置密码</h1>
+        </el-form-item>
+        <el-form-item prop="account">
+          <el-input :prefix-icon="User" placeholder="请输入邮箱号" v-model="resetPassword.account"></el-input>
+        </el-form-item>
+        <el-form-item prop="new_password">
+          <el-input :prefix-icon="Lock" type="new_password" placeholder="请输入新密码" v-model="resetPassword.new_password"></el-input>
+        </el-form-item>
+        <el-form-item prop="verify_code">
+          <el-input :prefix-icon="Lock" type="verify_code" placeholder="请点击验证按钮获取验证码" v-model="resetPassword.verify_code"></el-input>
+        </el-form-item>
+        <!-- 申请发送邮箱验证码按钮 -->
+        <el-form-item>
+          <el-button class="button" type="primary" auto-insert-space @click="reapply">
+            验证
+          </el-button>
+        </el-form-item>
+
+          <!-- 重置按钮 -->
           <el-form-item>
-            <el-input v-model="form.verifycode" style="width: 60%;height:3vh "></el-input>
-            <el-button style="height: 3vh;margin-top: 0" @click="sendyan">发送验证码</el-button>
-          </el-form-item>
-          <el-form-item>
-            <el-input v-model="form.newpassword" placeholder="请输入新密码"></el-input>
-          </el-form-item>
-        </el-form>
-        <template #footer>
-          <div class="dialog-footer">
-            <el-button @click="dialogFormVisible = false">取消</el-button>
-            <el-button type="primary" @click="submitNews">
-              确认
+            <el-button class="button" type="primary" auto-insert-space @click="reset">
+              重置密码
             </el-button>
-          </div>
-        </template>
-      </el-dialog>
-    </div>
-  </div>
+          </el-form-item>
+        <el-form-item class="flex">
+          <el-link type="info" :underline="false" @click="isRecet = false;isLogin = true">
+            ← 返回
+          </el-link>
+        </el-form-item>
+      </el-form>
+
+
+    </el-col>
+  </el-row>
+
+
 </template>
 
-<style scoped>
-.back{
-  background: white;
+<style lang="scss" scoped>
+
+.login-page {
   height: 100vh;
-  width: 100vw;
-  background-image: url("@/imgs/2.jpg");
-  background-size: cover;
-}
-.left{
-  margin-top: 22vh;
-  margin-left:15vw ;
-}
-.right{
-  position: fixed;
-  top: 30vh;
-  right: 15vw;
-  width: 25vw;
-  height: 35vh;
-  background-color: white ;
+  background-color: #fff;
 
-}
-.right-center{
-  padding-top: 16vh;
-  width: 25vw;
-  height: 35vh;
-  background-color: white;
-}
-.Rcenter{
-  width: 23vw;
-  height: 37vh;
-  padding-top: 3vh;
-  padding-left: 3vw;
-  font-size: 3vh;
-  background-color: white;
-}
+  .bg {
+    background: url('@/assets/logo3.png') no-repeat 60% center / 600px auto,
+    url('@/assets/login_bg.jpg') no-repeat center / cover;
+    border-radius: 0 20px 20px 0;
+  }
 
-button{
-  color: blue;
-  background-color: firebrick;
-  margin-top: 3vh;
-  width: 7vw;
-  height: 4vh
-}
-.re-password{
-  background: white;
-  position: fixed;
-  right: 16vw;
-  top: 62vh;
-  height: 1vh;
-  border: none;
+  .form
+  {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    user-select: none;
+
+    .title
+    {
+      margin: 0 auto;
+    }
+
+
+    .button {
+      width: 100%;
+      padding: 15px 20px;
+      border: 2px solid #007bff;
+      border-radius: 7px;
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+
+      &:hover {
+        background-color: #0056b3;
+      }
+    }
+    .flex
+    {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+    }
+  }
 }
 </style>
