@@ -28,7 +28,8 @@ public class CourseController {
                                  @RequestParam(value = "page_size", required = false, defaultValue = "10") int page_size,
                                  @RequestParam(value = "category", required = false, defaultValue = "") String category,
                                  @RequestParam(value = "name", required = false, defaultValue = "") String name,
-                                 @RequestParam(value = "teacher", required = false, defaultValue = "") String teacher) {
+                                 @RequestParam(value = "teacher", required = false, defaultValue = "") String teacher,
+                                 @RequestParam(value = "id", required = false, defaultValue = "") Long id) {
         CourseSearchParam param = new CourseSearchParam();
         param.setKeyword(keyword);
         param.setPage(page);
@@ -36,6 +37,7 @@ public class CourseController {
         param.setCategory(category);
         param.setName(name);
         param.setTeacher(teacher);
+        param.setId(id);
         return CourseService.searchCourse(param);
     }
     @DeleteMapping("/del/{id}")

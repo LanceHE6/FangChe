@@ -78,6 +78,9 @@ public class CourseServiceImpl implements CourseService {
                 return new Response(400, "教师不存在", null);
             }
         }
+        if (param.getId()!= null){
+            queryWrapper.eq("id", param.getId());
+        }
         // 查询课程名称为param.getKeyword()或课程简介包含param.getKeyword()或课程章节包含param.getKeyword()的课程
         if (param.getKeyword()!= null){
             queryWrapper.and(wq-> wq.like("name", param.getKeyword()).or()
