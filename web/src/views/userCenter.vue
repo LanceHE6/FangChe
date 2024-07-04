@@ -3,7 +3,8 @@ import {onBeforeMount, onMounted, reactive} from "vue";
 import router from "@/router/index.js";
 
 import axios from "axios";
-import Header from "@/components/Header.vue";
+import Header from "@/components/HeaderMenu.vue";
+import HeaderMenu from "@/components/HeaderMenu.vue";
 
 const errorHandler = () => true
 let user=reactive({
@@ -64,7 +65,7 @@ const uploadImage = async ()=>{
       formData
     }
   })
-  if(res.data.code==200){{
+  if(res.data.code===200){{
     alert('上传成功')
 
   }}else {
@@ -77,7 +78,7 @@ onBeforeMount(
 </script>
 
 <template>
-  <Header></Header>
+  <HeaderMenu></HeaderMenu>
   <div class="all">
   <div class="demo-type">
 <!--    <el-upload-->

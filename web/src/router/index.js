@@ -35,12 +35,26 @@ const routes=[
             }
         ]
     },
+    {
+      path: "/manage",
+      name:'manage',
+      component:()=>import('../views/manage.vue'),
+        children: [
+            {path: 'provide',name: 'provide',component:()=>import('../components/provide.vue'),},
+            {path: 'delete',name: 'delete',component:()=>import('../components/delete.vue'),},
+        ]
+    },
 {
     path: '/test',
     name: 'test',
     component:()=>import('../views/test.vue'),
 
 },
+    {
+      path: "/testContent",
+      name: "testContent",
+      component:()=>import('../views/testContent.vue'),
+    },
     {
       path: "/evaluation"  ,
         name: "evaluation",

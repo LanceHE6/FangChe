@@ -162,6 +162,7 @@ const login = async() =>{
 
     ElMessage.success('登录成功')
     localStorage.setItem('token', result.data.data.token)
+    localStorage.setItem('role', result.data.data.role)
     await router.push("/user/one")
 
     console.log(result.data.data.token)

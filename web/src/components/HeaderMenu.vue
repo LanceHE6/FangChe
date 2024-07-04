@@ -1,6 +1,23 @@
 <script setup>
-
+import {onBeforeMount, ref} from "vue";
 import {Avatar} from "@element-plus/icons-vue";
+import router from "@/router/index.js";
+
+const manager=ref(false)
+
+onBeforeMount(()=>{
+  const role='2'
+  if(role==='2'||role==='3'){
+    manager.value=true
+  }
+})
+
+const toManage=async ()=>{
+  await router.push('/manage')
+ window.location.reload()
+}
+
+
 </script>
 
 <template>
@@ -38,6 +55,7 @@ import {Avatar} from "@element-plus/icons-vue";
             <el-menu-item index="/" >用户中心</el-menu-item>
             <el-menu-item @click="">帮助中心</el-menu-item>
             <el-menu-item @click="">关于</el-menu-item>
+            <el-menu-item v-if="manager" @click="toManage">管理</el-menu-item>
             <el-menu-item @click="">退出登录</el-menu-item>
           </el-sub-menu>
 

@@ -1,61 +1,85 @@
 <script setup>
-import Header from "@/components/Header.vue";
+import HeaderMenu from "@/components/HeaderMenu.vue";
 
-import {onMounted, ref} from "vue";
+import {onMounted, ref,reactive} from "vue";
 import {CloseBold, Search} from "@element-plus/icons-vue";
 import axios from "axios";
-// 搜索的关键字
-const search=ref('')
-// 点击搜索后，进行的函数
-const submit= async ()=>{
+import router from "@/router/index.js";
+
+// // 搜索的关键字
+// const search=ref('')
+// // 点击搜索后，进行的函数
+// const submit= async ()=>{
+//   const subjectKey =search.value
+//   let token = localStorage.getItem('token')
+//   let res=await axios.get('/api/question/searchQuestion',{
+//     headers:{
+//       authorization:"Bearer "+token
+//     },
+//     params:{
+//       type:subjectKey,
+//     }
+//   })
+//   console.log('搜索',res)
+//   if(res.data.code===200){
+//     subjects.value=res.data
+//     console.log('搜索成功')
+//   }
+// }
+
+
+//前端存放测试题
+const subjects=ref([
+])
+//根据套题名称获取的题
+const testContent=reactive([
+  {title:'',}
+])
+// 点击不同的测试题
+const select=async (subject)=>{
+  const subjectKey =subject
   let token = localStorage.getItem('token')
-  let res=await axios.get('/question/searchQuestion',{
+  let res=await axios.get('/api/question/searchQuestion',{
     headers:{
       authorization:"Bearer "+token
     },
-    type:search.value,
+    params:{
+      type:subjectKey,
+    }
   })
-  console.log(res)
-  subjects.value=res.data
-}
-//前端存放测试题
-const subjects=ref([
-  {type:'高数'},
-  {type:'线代'},
-])
-// 点击不同的测试题
-const select=(subject)=>{
-  // console.log(subject.id)
-  console.log('选择')
+  if(res.data.code===200){
+
+    testContent.title=res.data.data
+    console.log('zzzzzzzzzzzzzzzzzzzzzz',testContent)
+    await router.push('/testContent')
+    // 全剧刷新有时可以不用
+  }
+
 }
 // 获取所有的测试题
 const acquireQuestion= async ()=>{
   const token = localStorage.getItem("token")
-  let res=await axios.get('/question/searchTypes',{
+  let res=await axios.get('/api/question/searchTypes',{
     headers:{
       authorization: 'Bearer '+token
     }
   })
   console.log(res)
   if(res.data.code===200){
-    subjects.value=res.data.type
-
-
-    console.log("获取成功")
-
-
+    subjects.value=res.data.data
+    // console.log("获取成功")
   }else {
     console.log("获取失败")
+
   }
-
 }
 
-const deleteSubject=async (subject,event)=>{
-  event.stopPropagation()
-  console.log('删除')
 
-
-}
+// 删除
+// const deleteSubject=async (subject,event)=>{
+//   event.stopPropagation()
+//   console.log('删除')
+// }
 // 进页面时就调用获取所有测试题的函数
 onMounted(()=>
     acquireQuestion()
@@ -64,20 +88,20 @@ onMounted(()=>
 
 <template>
 
-<Header></Header>
+<HeaderMenu></HeaderMenu>
   <div class="all">
-  <div class="searchB">
-    <form class="searchForm">
-        <input class="searchInput" v-model="search"/>
-        <button class="searchButton" @click="submit">
-          <el-icon size="large"><Search /></el-icon>
-        </button>
-    </form>
-    <button class="postSubject">上传</button>
-  </div>
+<!--  <div class="searchB">-->
+<!--&lt;!&ndash;    <form class="searchForm">&ndash;&gt;-->
+<!--&lt;!&ndash;        <input class="searchInput" v-model="search"/>&ndash;&gt;-->
+<!--&lt;!&ndash;        <button class="searchButton" @click="submit">&ndash;&gt;-->
+<!--&lt;!&ndash;          <el-icon size="large"><Search /></el-icon>&ndash;&gt;-->
+<!--&lt;!&ndash;        </button>&ndash;&gt;-->
+<!--&lt;!&ndash;    </form>&ndash;&gt;-->
+
+<!--  </div>-->
   <div class="bottom">
     <div v-for="(subject,index) in subjects" :key="index" @click="select(subject)" class="connect">
-      {{subject.type}}
+      {{subject}}
       测试题
       <button @click="deleteSubject(subject,$event)" class="cButton" ><el-icon><CloseBold /></el-icon></button>
     </div>
@@ -95,40 +119,9 @@ onMounted(()=>
   justify-content: center;
   align-items: center;
 }
-.searchB{
-  display: flex;
-  .postSubject{
-    position: relative;
-
-  }
-}
-.searchForm{
-  display: flex;
-  justify-content: center;
-  margin-top: 2.5vh;
-  width: 100vw;
-  height: 5vh;
-  .searchInput{
-    width: 50vw;
-    font-size: 2.0vh;
-  }
-  .searchButton{
-    width: 5vh;
-    height: 4.5vh;
-    position: relative;
-    top: 0.25vh;
-    right: 6vh;
-    border: none;
-    background-color: white;
-
-  }
-}
-.searchButton:hover{
-  cursor: pointer;
-}
 
 .bottom{
-  margin-top: 2.5vh;
+  margin-top: 8.5vh;
   width: 73vw;
   max-height: 200vh;
   padding: 1.5vh;
