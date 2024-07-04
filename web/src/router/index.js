@@ -14,27 +14,33 @@ const routes=[
         component: ()=>import("../views/userCenter.vue"),
         children: [
             {
-                path: '/one',
+                path: 'one',
                 name:'myClass',
                 component: ()=>import('../components/one.vue'),
             },
             {
-                path: '/two',
+                path: 'two',
                 name: 'myTest',
                 component:()=>import('../components/two.vue'),
             },
             {
-                path: '/three',
+                path: 'three',
                 name: 'personSet',
                 component: () => import('../components/three.vue')
             },
             {
-                path: '/four',
+                path: 'four',
                 name: 'safeSet',
                 component:()=>import('../components/four.vue'),
             }
         ]
     },
+{
+    path: '/test',
+    name: 'test',
+    component:()=>import('../views/test.vue'),
+
+},
     {
       path: "/evaluation"  ,
         name: "evaluation",

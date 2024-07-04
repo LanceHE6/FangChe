@@ -161,8 +161,10 @@ const login = async() =>{
   if(result.data.code == 200){
 
     ElMessage.success('登录成功')
-    await router.push("/")
+    localStorage.setItem('token', result.data.data.token)
+    await router.push("/user/one")
 
+    console.log(result.data.data.token)
   }else{
     alert('账号或者密码错误，登录失败')
   }

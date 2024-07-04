@@ -9,6 +9,7 @@
       <el-main>Main</el-main>
     </el-container>
 <!--    <router-link to="/study">学习</router-link>-->
+    <router-link to="user/one"></router-link>
   </div>
 </template>
 

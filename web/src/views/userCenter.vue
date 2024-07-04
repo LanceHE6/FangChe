@@ -3,21 +3,22 @@ import {onBeforeMount, onMounted, reactive} from "vue";
 import router from "@/router/index.js";
 
 import axios from "axios";
+import Header from "@/components/Header.vue";
 
 const errorHandler = () => true
 let user=reactive({
   username:'',
   imgPath:'',
   account:'',
-  file:''
+  identity:''
 })
 
 
 const ziyems=[
-  {name:'我的课程',href:"/one"},
-  {name:'我的测评',href: "/two"},
-  {name: '基本设置',href: "/three"},
-  {name:'安全设置',href: "/four"},
+  {name:'我的课程',href:"one"},
+  {name:'我的测评',href: "two"},
+  {name: '基本设置',href: "three"},
+  {name:'安全设置',href: "four"},
 ]
 
 const toChange=(ziyem)=>{
@@ -25,24 +26,20 @@ const toChange=(ziyem)=>{
 }
 const getUserMessage=async()=>{
   const token = localStorage.getItem("token")
+  console.log(token)
   let res = await axios.get('/api/user/info',{
     headers: {
-      "Authorization": "Bearer "+token
+      "Authorization": 'bearer '+token,
     }
   })
-  console.log('res',res)
   user.username=res.data.nickname;
   user.account=res.data.account;
-  localStorage.setItem(user.account)
-  user.imgPath=JSON.parse(res.data.avatar);
-  user.imgPath=btoa(
-      new Uint8Array(res.data).reduce(
-          (data, byte) => data + String.fromCharCode(byte),
-          ''
-      )
-  )
+  user.imgPath=res.data.avatar;
+  user.identity=res.data.role;
 
 }
+console.log(user)
+//上传头像
 const postAvatar= async ()=>{
   document.querySelector('input[type="file"]').click();
 }
@@ -69,29 +66,39 @@ const uploadImage = async ()=>{
   })
   if(res.data.code==200){{
     alert('上传成功')
+
   }}else {
     alert('上传失败')
   }
 }
 onBeforeMount(
-    getUserMessage
+    getUserMessage,
 )
 </script>
 
 <template>
+  <Header></Header>
   <div class="all">
   <div class="demo-type">
-    <el-avatar @click="postAvatar" :size="100" src="https://empty" @error="errorHandler">
-      <img src='../imgs/3.png'/>
+<!--    <el-upload-->
+<!--        class="avatar-uploader"-->
+<!--        action=""-->
+<!--        :show-file-list="false"-->
+<!--        :on-success="handleAvatarSuccess"-->
+<!--        :before-upload="beforeAvatarUpload"-->
+<!--    >-->
+<!--      <img v-if="imageUrl" :src="imageUrl" class="avatar" />-->
+<!--      <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>-->
+<!--    </el-upload>-->
+    <el-avatar @click="postAvatar" :size="100" src="{{user.imgPath}}" @error="errorHandler">
       <input type="file" @change="handleFileChange" style="display: none">
     </el-avatar>
-    <div style="margin-top: 1vh;font-size: 3vh">{{user.username}}</div>
+    <div style=" max-width: 10vw;max-height: 4vh;margin-top: 1vh;font-size: 3vh">{{user.username===null?user.account:user.account}}</div>
   </div>
 
 
   <div class="bottom">
       <el-container >
-
         <div class="aside">
           <div v-for="(ziyem,index) in ziyems" :key="index" @click="toChange(ziyem)">
           <button style="width: 12vw;height: 6vh;font-size: 3vh;margin-bottom: 2vh;border:0.1vh solid whitesmoke ">
@@ -109,10 +116,6 @@ onBeforeMount(
 </template>
 
 <style scoped>
-.all{
-  position: relative;
-  bottom: 8vh;
-}
 .demo-type{
   display: flex;
   flex-direction: column;
@@ -120,7 +123,7 @@ onBeforeMount(
   align-items: center;
   width: 100vw;
   height: 25vh;
-  background-color: #181818;
+  background-color: green;
 }
 .bottom{
   width: 100vw;

@@ -1,9 +1,7 @@
-<script setup lang="ts">
+<script setup>
 import {reactive, ref, defineProps, onMounted, computed} from 'vue'
-import type { ComponentSize, FormProps } from 'element-plus'
 import axios from "axios";
-
-const labelPosition = ref<FormProps['labelPosition']>('top')
+import {ElMessage} from "element-plus";
 const account=localStorage.getItem('user.account')
 const sizeForm = reactive({
   nickname:account,
@@ -38,19 +36,21 @@ const change=()=>{
     }
   }
 }
-const submit=()=>{
-  console.log(sizeForm)
+
+const  submit= async() =>{
+
   const token = localStorage.getItem("token")
-  let res=axios.put('/api/user/update',{
+  console.log(token)
+  let res=await axios.put('/api/user/update',{
     headers: {
       "Authorization": "Bearer "+token
     }
   })
-  console.log(res)
+  console.log('',res)
   if(res.data.code===200){
-    alert("修改成功")
+    ElMessage({message:"修改成功",type:'success'})
   }else {
-    alert("修改失败")
+    ElMessage({message:"修改失败",type:'error'})
   }
 }
 </script>
@@ -112,6 +112,7 @@ const submit=()=>{
 }
 .writeText{
   font-size: 2.5vh;
+  background-color: darkgray;
 }
 .el-form-item--large{
   --font-size: 2vh;
