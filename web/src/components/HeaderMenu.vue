@@ -1,8 +1,3 @@
-<script setup>
-
-import {Avatar} from "@element-plus/icons-vue";
-</script>
-
 <template>
 
       <el-header class="menu-header">
@@ -28,17 +23,20 @@ import {Avatar} from "@element-plus/icons-vue";
           <el-sub-menu index="3">
             <template #title>
               <el-icon>
-                <el-icon :size="60"><Avatar /></el-icon>
+                <el-icon :size="60">
+                  <Avatar />
+                </el-icon>
               </el-icon>
               <div style="font-size: 20px">
-                {{'用户'}}
+                {{userInfo.nickname}}
               </div>
 
             </template>
-            <el-menu-item index="/" >用户中心</el-menu-item>
-            <el-menu-item @click="">帮助中心</el-menu-item>
-            <el-menu-item @click="">关于</el-menu-item>
-            <el-menu-item @click="">退出登录</el-menu-item>
+<!--            循环遍历生成菜单-->
+
+            <el-menu-item v-for="i in menu" :index="i.index" @click="userRoute(i.index)">
+              {{ i.label }}
+            </el-menu-item>
           </el-sub-menu>
 
         </el-menu>
@@ -46,6 +44,88 @@ import {Avatar} from "@element-plus/icons-vue";
       </el-header>
 
 </template>
+
+<script setup>
+import {Avatar} from "@element-plus/icons-vue";
+import {onMounted, reactive} from "vue";
+import axios from "axios";
+import {ElMessage} from "element-plus";
+import router from "@/router/index.js";
+
+let userInfo = reactive({
+  nickname: "请登录",
+  avatar: "",
+
+})
+
+// 获取用户信息
+const getUserInfo = async () => {
+  const token = localStorage.getItem("token");
+  console.log(`token:${token}`)
+  if (token) {
+    const response = await axios.get("/api/user/info", {headers: {'Authorization': `Bearer ${token}`}});
+    console.log(response);
+    if (response.data.code === 200) {
+      userInfo.nickname = response.data.data.nickname;
+      userInfo.avatar = response.data.data.avatar;
+    } else if (response.data.code === 303){
+      ElMessage.error("登录已过期，请重新登录")
+      // 清除token
+      localStorage.setItem("token", "")
+      setWitchMenu()
+    }
+  }
+}
+
+// 已经登陆的用户菜单栏选项
+const menu1 = [
+  {
+    index: "/user",
+    label: "用户中心",
+  }
+  ,
+  {
+    index: "/about",
+    label: "关于",
+  },
+  {
+    index: "/logout",
+    label: "退出登录",
+  }
+]
+// 未登录的用户菜单栏选项
+const menu2 = [
+  {
+    index: "/login",
+    label: "登录",
+  }
+  ,
+  {
+    index: "/about",
+    label: "关于",
+  }
+  ,
+]
+// 显示的用户菜单栏选项
+const menu = reactive([]);
+const setWitchMenu = () => {
+  if (localStorage.getItem("token")) {
+    menu.push(...menu1);
+  } else {
+    menu.push(...menu2);
+  }
+}
+onMounted(() =>{
+  getUserInfo();
+  setWitchMenu();
+})
+
+const userRoute = (index) => {
+  router.push(index)
+}
+
+
+</script>
 
 <style scoped>
 * {
@@ -56,7 +136,7 @@ import {Avatar} from "@element-plus/icons-vue";
 .menu-header{
   position: fixed;
   width: 100%;
-
+  z-index: 1000;
 }
 .menu {
   height: 72px;
