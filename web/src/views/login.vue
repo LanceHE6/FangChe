@@ -159,7 +159,7 @@ const login = async() =>{
   let result = await userLoginService(registerData.value);
   console.log(result)
   if(result.data.code == 200){
-
+    localStorage.setItem('token',result.data.data.token)
     ElMessage.success('登录成功')
     localStorage.setItem('token', result.data.data.token)
     localStorage.setItem('role', result.data.data.role)
