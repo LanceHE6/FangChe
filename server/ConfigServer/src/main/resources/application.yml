@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: ConfigServer
+  profiles:
+    active: native
+  cloud:
+    config:
+      server:
+        native:
+          searchLocations: classpath:/config-repo # ????????classpath?????????????
+
+server:
+  port: 8888
