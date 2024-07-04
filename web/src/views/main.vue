@@ -4,41 +4,105 @@
       <Header></Header>
       <el-main class="main">
         <div class="ad">
-          <img src="../assets/main/u1072.png" alt="ad" class="img-ad">
+          <div class="img-ad">
+            <img src="../assets/main/u1072.png" alt="ad" style="min-width: 245px; min-height: 345px;">
+          </div>
+
           <div class="text-ad">
             <el-text class="text-ad1">在线课程</el-text>
             <el-text class="text-ad2">多元化培训课程，OMO培训服务、直播教学服务</el-text>
           </div>
 
         </div>
+        <div class="search">
+          <el-input v-model="queryParams.keyword" class="search_input" placeholder="请输入关键字" size="large">
+          </el-input>
+          <el-button size="large" :icon="Search" type="primary" class="search_button" @click="searchCourse">
+            搜索
+          </el-button>
+        </div>
 
-          <div class="course">
-            <div class="course-list">
-              <el-row :gutter="20">
-                <el-col :span="6" v-for="item in 20" :key="item" ><div class="grid-content ep-bg-purple" />
-                  <el-card style="max-width: 480px">
-                    <p v-for="o in 4" :key="o" class="text item">{{ 'List item ' + o }}</p>
-                    <template #footer>Footer content</template>
+        <div class="course">
+          <div class="course-list">
+            <el-row :gutter="20">
+              <el-col :span="6" v-for="(course, index) in courseList" :key="index">
+                <div class="course-card">
+                  <el-card class="grid-content">
+                    <img src="https://naive-ui.oss-cn-beijing.aliyuncs.com/carousel-img/carousel1.jpeg" class="course-image" alt="fangche">
+                    <template #footer>{{course.name}}</template>
                   </el-card>
-                </el-col>
-              </el-row>
-            </div>
+                </div>
 
-            <el-pagination background layout="prev, pager, next" :total="1000" />
+              </el-col>
+            </el-row>
           </div>
 
+          <div class="pagination">
+            <el-pagination background layout="prev, pager, next"
+                           :total="total"
+                           :page-size="queryParams.page_size"
+                           @current-change="handlePageChange"/>
+          </div>
+        </div>
+       <Footer></Footer>
       </el-main>
 
-      <el-footer>
-        Footer
-      </el-footer>
     </el-container>
+
   </div>
 </template>
 
 <script setup>
+import Header from "../components/HeaderMenu.vue";
+import { Search } from "@element-plus/icons-vue";
+import axios from "axios";
+import { onMounted, reactive, ref } from "vue";
+import { ElMessage } from "element-plus";
+import Footer from "@/components/Footer.vue";
 
-import Header from  "../components/HeaderMenu.vue";
+let courseList = ref([]);
+let total = ref(0);
+let queryParams = reactive({
+  page: 1,
+  page_size: 12,
+  keyword: "",
+});
+
+// 获取课程列表
+const getCourseList = async () => {
+  const response = await axios.get("/api/course/search", { params: queryParams });
+  if (response.data.code !== 200) {
+  ElMessage.error("请求课程列表失败");
+  return;
+  }
+  courseList.value = response.data.data.rows;
+  total.value = response.data.data.total;
+  console.log(courseList.value);
+  console.log(total);
+};
+
+onMounted(() => {
+  getCourseList();
+});
+
+const searchCourse = async () => {
+  // 重置分页
+  queryParams.page = 1;
+  const response = await axios.get("/api/course/search", { params: queryParams });
+  if (response.data.code !== 200) {
+  ElMessage.error("请求课程列表失败");
+  return;
+  }
+  courseList.value = response.data.data.rows;
+  total.value = response.data.data.total;
+  console.log(courseList.value);
+  console.log(total);
+};
+
+const handlePageChange = (page) => {
+  queryParams.page = page;
+  getCourseList();
+};
 </script>
 
 <style scoped>
@@ -53,28 +117,34 @@ import Header from  "../components/HeaderMenu.vue";
   width: 100vw;
   background-color: white;
 }
+.container {
+  height: 100vh;
+}
 
 .main {
-  overflow: hidden;
+  max-height: 100vh; /* 减去头部的高度（假设为 50px） */
+  overflow: auto;
 }
 .ad {
   width: 100%;
-  height: 40%;
+  height: 35%;
+  margin-top: -25px;
   background-color: #409EFF;;
   background-image: url("../assets/main/u314.jpg");
+  z-index: -1;
 }
 .img-ad {
   width: 20%;
-  height: 90%;
   margin: 5% 72%;
-  min-width: 245px;
-  min-height: 345px;
+  z-index: 1;
 }
 .text-ad {
+  position: relative;
   color: white;
   font-size: 20px;
   font-weight: bold;
   margin: -20% 0 0 10%;
+  z-index: 2;
 }
 .text-ad1 {
   color: black;
@@ -89,11 +159,15 @@ import Header from  "../components/HeaderMenu.vue";
 }
 .course {
   width: 80%;
-  margin-top: 100px;
+  margin: 0 auto 50px;
+  z-index: -1;
+}
+.course-image {
+  width: 100%;
+  height: 200px;
 }
 .course-list {
   width: 100%;
-  display: flex;
   justify-content: center;
   align-items: center;
 }
@@ -107,9 +181,35 @@ el-row:last-child {
 el-col {
   border-radius: 4px;
 }
+.course-card {
+  transition: all 0.3s ease;
+}
+.course-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
 
 .grid-content {
   border-radius: 4px;
   min-height: 36px;
+  margin-top: 40px;
 }
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin: 50px auto;
+}
+.search {
+  display: flex;
+  align-items: center;
+  margin: 40px auto 10px;
+  width: 400px;
+  height: 50px;
+  z-index: 1;
+}
+.search_button {
+  width:100px;
+}
+
+
 </style>
