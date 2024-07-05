@@ -8,10 +8,12 @@ import com.fangche.service1.entity.Response;
 import com.fangche.service1.entity.User;
 import com.fangche.service1.entity.requestParam.course.CourseAddParam;
 import com.fangche.service1.entity.requestParam.course.CourseSearchParam;
+import com.fangche.service1.entity.requestParam.course.CourseSetImageParam;
 import com.fangche.service1.mapper.CourseCollectionMapper;
 import com.fangche.service1.mapper.CourseMapper;
 import com.fangche.service1.mapper.UserMapper;
 import com.fangche.service1.service.CourseService;
+import com.fangche.service1.utils.StaticResourcesUtil;
 import com.fangche.service1.utils.UserUtil;
 import com.google.gson.Gson;
 
@@ -19,7 +21,10 @@ import com.google.gson.reflect.TypeToken;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -169,6 +174,35 @@ public class CourseServiceImpl implements CourseService {
             return new Response(200, "成功取消收藏该课程", null);
         }
 
+    }
+
+    @Override
+    public Response setCourseImage(CourseSetImageParam param) {
+        MultipartFile image = param.getImage();
+        if (image.isEmpty()) {
+            return new Response(400, "未选择文件", null);
+        }
+
+        try {
+            File filePath = StaticResourcesUtil.getCourseImagePath(image.getOriginalFilename());
+            image.transferTo(filePath);
+        } catch (IOException e) {
+            return new Response(500, "上传失败", e.getMessage());
+        }
+
+        Long id = param.getId();
+
+        // 更新数据库
+        Course course = courseMapper.selectOne(new QueryWrapper<Course>().eq("id", id));
+        course.setImage(StaticResourcesUtil.COURSE_IMAGE_UPLOAD_DIR + image.getOriginalFilename());
+        courseMapper.updateById(course);
+
+        HashMap<String, String> data = new HashMap<>();
+        data.put("id", String.valueOf(id));
+        data.put("image_name", image.getOriginalFilename());
+        data.put("path", StaticResourcesUtil.USER_AVATAR_UPLOAD_DIR + image.getOriginalFilename());
+
+        return new Response(200, "上传成功", data);
     }
 }
 

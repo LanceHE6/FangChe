@@ -3,6 +3,7 @@ package com.fangche.service1.controller;
 import com.fangche.service1.entity.Response;
 import com.fangche.service1.entity.requestParam.course.CourseAddParam;
 import com.fangche.service1.entity.requestParam.course.CourseSearchParam;
+import com.fangche.service1.entity.requestParam.course.CourseSetImageParam;
 import com.fangche.service1.service.CourseService;
 import com.fangche.service1.utils.authority.Authority;
 import com.fangche.service1.utils.authority.Permission;
@@ -15,11 +16,16 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/course")
 public class CourseController {
     @Autowired
-    private CourseService CourseService;
+    private CourseService courseService;
     @PostMapping("/add")
     @Authority(Permission.AUTHOR)
     public Response addCourse(@Valid @RequestBody CourseAddParam param) {
-        return CourseService.addCourse(param);
+        return courseService.addCourse(param);
+    }
+    @PostMapping("/set-image")
+    @Authority(Permission.AUTHOR)
+    public Response setCourseImage(@Valid @RequestBody CourseSetImageParam param) {
+        return courseService.setCourseImage(param);
     }
 
     @GetMapping("/search")
@@ -38,12 +44,12 @@ public class CourseController {
         param.setName(name);
         param.setTeacher(teacher);
         param.setId(id);
-        return CourseService.searchCourse(param);
+        return courseService.searchCourse(param);
     }
     @DeleteMapping("/del/{id}")
     @Authority(Permission.AUTHOR)
     public Response delCourse(@PathVariable("id") Long id) {
-        return CourseService.deleteCourse(id);
+        return courseService.deleteCourse(id);
     }
 
     /**
@@ -55,7 +61,7 @@ public class CourseController {
     @PostMapping("/collect/{id}")
     @Authority
     public Response collectCourse(@PathVariable("id") Long id, HttpServletRequest request) {
-        return CourseService.collectCourse(id, request);
+        return courseService.collectCourse(id, request);
     }
     /**
      *  取消收藏课程
@@ -66,6 +72,6 @@ public class CourseController {
     @PostMapping("/collect/remove/{id}")
     @Authority
     public Response removeCollectCourse(@PathVariable("id") Long id, HttpServletRequest request) {
-        return CourseService.removeCollectCourse(id, request);
+        return courseService.removeCollectCourse(id, request);
     }
 }
