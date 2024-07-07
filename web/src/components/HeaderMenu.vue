@@ -16,6 +16,12 @@ const toManage=async ()=>{
   await router.push('/manage')
  window.location.reload()
 }
+const toTest=async ()=>{
+  await router.push('/test')
+}
+const toUser=async ()=>{
+  await router.push('/user/one')
+}
 
 
 </script>
@@ -39,7 +45,7 @@ const toManage=async ()=>{
 
 
           <el-menu-item index="1" style="font-size: 28px; margin-left: 40px">在线课程</el-menu-item>
-          <el-menu-item index="2" style="font-size: 28px; margin-left: 40px">测评</el-menu-item>
+          <el-menu-item @click="toTest" index="2" style="font-size: 28px; margin-left: 40px">测评</el-menu-item>
 
           <div class="menu-right"/>
           <el-sub-menu index="3">
@@ -52,7 +58,7 @@ const toManage=async ()=>{
               </div>
 
             </template>
-            <el-menu-item index="/" >用户中心</el-menu-item>
+            <el-menu-item index="/" @click="toUser">用户中心</el-menu-item>
             <el-menu-item @click="">帮助中心</el-menu-item>
             <el-menu-item @click="">关于</el-menu-item>
             <el-menu-item v-if="manager" @click="toManage">管理</el-menu-item>
@@ -74,7 +80,8 @@ const toManage=async ()=>{
 .menu-header{
   position: fixed;
   width: 100%;
-
+  background-color: white;
+  z-index: 99;
 }
 .menu {
   height: 72px;

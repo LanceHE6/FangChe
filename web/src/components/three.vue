@@ -37,15 +37,24 @@ const change=()=>{
   }
 }
 
+// 更新信息
 const  submit= async() =>{
 
   const token = localStorage.getItem("token")
   console.log(token)
-  let res=await axios.put('/api/user/update',{
-    headers: {
-      "Authorization": "Bearer "+token
-    }
-  })
+  let res=await axios.put('/api/user/update',
+    {
+      nickname:'123',
+      gender:'1',
+      signature:'222',
+      introduction:'2'
+  },{
+      headers:{
+        authorization:'Bearer '+token,
+      }
+  }
+
+  )
   console.log('',res)
   if(res.data.code===200){
     ElMessage({message:"修改成功",type:'success'})

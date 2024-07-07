@@ -1,34 +1,36 @@
 <script setup>
 
-import {onMounted, reactive, ref} from "vue";
+import {onBeforeMount, onMounted, reactive, ref} from "vue";
 import router from "@/router/index.js";
 import HeaderMenu from "@/components/HeaderMenu.vue";
-import {Eventbus} from './event-bus.js'
+import {eventBus} from '@/utils/event-bus.js'
 
 const centerDialogVisible = ref(false)
-const testContents =reactive([
-  {title:'java',label1: 'aaa',label2:'bbb',label3:'ccc',label4:'ddd'},
-  {title:'c++',label1: '444',label2:'333',label3:'222',label4:'111'},
-])
+
 const radio=ref([])
+
+let testContents =reactive([])
+onBeforeMount(()=>{
+
+  const test= localStorage.getItem('subject')
+
+  testContents=JSON.parse(test)
+  console.log('s',testContents)
+})
 
 const cancel= async ()=>{
   await router.push('/test')
 }
 // 点击提交会对题目答案进行判断，出现对了几个，错了几个
 // 没做完，不对
-const judge=async ()=>{
-  if(radio.length===null){
-    alert('请答题')
-  }
-  console.log(radio.value)
-
-
-}
-
-onMounted(()=>{
-
-})
+// const judge=async ()=>{
+//   if(radio.length===null){
+//     alert('请答题')
+//   }
+//   console.log(radio.value)
+//
+//
+// }
 
 </script>
 
@@ -37,13 +39,13 @@ onMounted(()=>{
 <div style="width: 100vw;padding-top: 12vh;display: flex;justify-content: center">
   <div class="content">
     <div class="example" v-for="(test,index) in testContents" :key="index">
-      {{test.title}}
+      {{index+1}}、{{test.text}}
       <div>
         <el-radio-group v-model="radio[index]">
-          <el-radio :label="1">A{{test.label1}}</el-radio>
-          <el-radio :label="2">B{{test.label2}}</el-radio>
-          <el-radio :label="3">C{{test.label3}}</el-radio>
-          <el-radio :label="4">D{{test.label4}}</el-radio>
+          <el-radio v-for="(item,index) in test.options" :label=index>{{item.text}}
+          <br>
+          </el-radio>
+
         </el-radio-group>
       </div>
     </div>
@@ -67,9 +69,9 @@ onMounted(()=>{
 <style scoped>
 .content{
   padding-top: 5vh;
-  width: 70%;
-  max-height: 200vh;
+  width: 60%;
   box-shadow: 0.15vh 0.25vh 0.5vh 0.5vh;
+  margin-bottom: 2vh;
   border: 0.1vh solid darkgray;
   border-radius: 1.5vh;
   display: flex;
@@ -99,5 +101,10 @@ onMounted(()=>{
 }
 .button-end:active{
   background-color: white;
+}
+.el-radio-group{
+  display: flex;
+  flex-direction: column;
+  align-items: start;
 }
 </style>

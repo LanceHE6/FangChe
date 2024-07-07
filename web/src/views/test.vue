@@ -6,37 +6,13 @@ import {CloseBold, Search} from "@element-plus/icons-vue";
 import axios from "axios";
 import router from "@/router/index.js";
 
-// // 搜索的关键字
-// const search=ref('')
-// // 点击搜索后，进行的函数
-// const submit= async ()=>{
-//   const subjectKey =search.value
-//   let token = localStorage.getItem('token')
-//   let res=await axios.get('/api/question/searchQuestion',{
-//     headers:{
-//       authorization:"Bearer "+token
-//     },
-//     params:{
-//       type:subjectKey,
-//     }
-//   })
-//   console.log('搜索',res)
-//   if(res.data.code===200){
-//     subjects.value=res.data
-//     console.log('搜索成功')
-//   }
-// }
-
-
 //前端存放测试题
-const subjects=ref([
-])
-//根据套题名称获取的题
-const testContent=reactive([
-  {title:'',}
-])
+const subjects=ref([])
+
 // 点击不同的测试题
+
 const select=async (subject)=>{
+
   const subjectKey =subject
   let token = localStorage.getItem('token')
   let res=await axios.get('/api/question/searchQuestion',{
@@ -48,9 +24,8 @@ const select=async (subject)=>{
     }
   })
   if(res.data.code===200){
-
-    testContent.title=res.data.data
-    console.log('zzzzzzzzzzzzzzzzzzzzzz',testContent)
+    localStorage.setItem("subject",JSON.stringify(res.data.data));
+    console.log(res.data.data);
     await router.push('/testContent')
     // 全剧刷新有时可以不用
   }
@@ -64,7 +39,6 @@ const acquireQuestion= async ()=>{
       authorization: 'Bearer '+token
     }
   })
-  console.log(res)
   if(res.data.code===200){
     subjects.value=res.data.data
     // console.log("获取成功")
@@ -73,7 +47,6 @@ const acquireQuestion= async ()=>{
 
   }
 }
-
 
 // 删除
 // const deleteSubject=async (subject,event)=>{
@@ -90,20 +63,12 @@ onMounted(()=>
 
 <HeaderMenu></HeaderMenu>
   <div class="all">
-<!--  <div class="searchB">-->
-<!--&lt;!&ndash;    <form class="searchForm">&ndash;&gt;-->
-<!--&lt;!&ndash;        <input class="searchInput" v-model="search"/>&ndash;&gt;-->
-<!--&lt;!&ndash;        <button class="searchButton" @click="submit">&ndash;&gt;-->
-<!--&lt;!&ndash;          <el-icon size="large"><Search /></el-icon>&ndash;&gt;-->
-<!--&lt;!&ndash;        </button>&ndash;&gt;-->
-<!--&lt;!&ndash;    </form>&ndash;&gt;-->
 
-<!--  </div>-->
   <div class="bottom">
     <div v-for="(subject,index) in subjects" :key="index" @click="select(subject)" class="connect">
       {{subject}}
       测试题
-      <button @click="deleteSubject(subject,$event)" class="cButton" ><el-icon><CloseBold /></el-icon></button>
+<!--      <button @click="deleteSubject(subject,$event)" class="cButton" ><el-icon><CloseBold /></el-icon></button>-->
     </div>
   </div>
   </div>
