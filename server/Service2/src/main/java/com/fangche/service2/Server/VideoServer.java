@@ -19,4 +19,7 @@ public interface VideoServer {
     Result deleteById(Long id);
 
     Result deleteBatchIds(ArrayList<Integer> list);
+
+
+    Result videoClick(Long id);
 }

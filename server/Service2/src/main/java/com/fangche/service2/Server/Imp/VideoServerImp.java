@@ -106,6 +106,18 @@ public class VideoServerImp implements VideoServer {
     }
 
     @Override
+    public Result videoClick(Long id) {
+        Video video = videoMapper.selectById(id);
+        if (video!=null) {
+            video.setHits(video.getHits() + 1);
+            videoMapper.updateById(video);
+            return  Result.success();
+        }
+        return Result.error("更新失败");
+    }
+
+
+    @Override
     public Result deleteById(Long id) {
         int flag = videoMapper.deleteById(id);
         if (flag == 1) {
