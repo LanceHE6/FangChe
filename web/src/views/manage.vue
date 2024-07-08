@@ -1,19 +1,32 @@
 <script setup>
 import HeaderMenu from "@/components/HeaderMenu.vue";
+import router from "@/router/index.js";
+
+
+const toCourse=async ()=>{
+  await router.push("courseM")
+  window.location.reload()
+}
+const toTest=async ()=>{
+  await router.push("testM")
+  window.location.reload()
+}
 </script>
 
 <template>
   <HeaderMenu />
 
   <div class="all">
-    <h1>管理界面</h1>
-    <div>
-      <router-link to="/manage/provide">发布</router-link>
-      |
-      <router-link to="/manage/delete">删除操作</router-link>
-    </div>
-    <div class="connect">
-      <router-view></router-view>
+  <div class="left">
+    <button @click="toCourse" style="font-size: 3vh">
+      课程管理
+    </button>
+    <button @click="toTest" style="margin-top: 15vh;font-size: 3vh">
+      测评管理
+    </button>
+  </div>
+    <div class="main">
+    <router-view></router-view>
     </div>
   </div>
 
@@ -21,24 +34,25 @@ import HeaderMenu from "@/components/HeaderMenu.vue";
 </template>
 
 <style scoped>
-h1{
-  box-shadow: 0.11vw 0.11vw  ;
-  margin-bottom: 1vh;
-}
-.all{
-  width: 100vw;
-  padding-top: 10vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  .connect{
-    margin-top: 1vh;
-    padding-top:2vh;
-    width: 70%;
-    border-radius: 1vh;
-    border: 0.1vh solid gray;
-    box-shadow: 0.15vw 0.15vw 0.15vw 0.15vw;
-
+  .all{
+    padding-top: 13vh;
+    padding-left: 5vw;
+    padding-right: 5vw;
+    display: flex;
+    width: 100vw;
+    .left{
+      width: 18vw;
+      height: 40vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    .main{
+      width: 100%;
+      max-height: 100vh;
+      min-height: 60vh;
+      border: 0.1vh solid black;
+    }
   }
-}
 </style>

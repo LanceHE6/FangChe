@@ -40,8 +40,9 @@ const routes=[
       name:'manage',
       component:()=>import('../views/manage.vue'),
         children: [
-            {path: 'provide',name: 'provide',component:()=>import('../components/provide.vue'),},
-            {path: 'delete',name: 'delete',component:()=>import('../components/delete.vue'),},
+            {path: 'testM',name: 'testM',component:()=>import('../components/testManage.vue'),},
+            {path: 'courseM',name: 'course',component:()=>import('../components/course.vue'),},
+            {path: 'testC',name: 'testC',component:()=>import('../components/testC.vue'),},
         ]
     },
 {

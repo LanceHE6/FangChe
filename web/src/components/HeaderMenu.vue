@@ -13,7 +13,7 @@ onBeforeMount(()=>{
 })
 
 const toManage=async ()=>{
-  await router.push('/manage')
+  await router.push('/manage/courseM')
  window.location.reload()
 }
 const toTest=async ()=>{

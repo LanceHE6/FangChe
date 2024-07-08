@@ -97,7 +97,7 @@ onBeforeMount(()=>{
 
 
   <div class="bottom">
-    <button @click="getUserMessage">获取数据</button>
+<!--    <button @click="getUserMessage">获取数据</button>-->
       <el-container >
         <div class="aside">
           <div v-for="(ziyem,index) in ziyems" :key="index" @click="toChange(ziyem)">
