@@ -18,10 +18,17 @@ import java.time.LocalDateTime;
 @Setter
 @Getter
 public class Video {
+    //主键id
     private Long id;
+    //视频名称
     private String name;
+    //资源路径
     private String url;
+    //视频时长
     private Long timeLength;
+    //视频点击量
+    private Long hits;
+    
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime releaseTime;
