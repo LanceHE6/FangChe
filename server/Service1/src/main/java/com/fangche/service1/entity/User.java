@@ -2,6 +2,7 @@ package com.fangche.service1.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tangzc.mpe.autotable.annotation.Column;
 import com.tangzc.mpe.autotable.annotation.Table;
 import lombok.Getter;
@@ -12,6 +13,7 @@ import lombok.Setter;
 @Getter
 public class User extends BaseEntity{
     private String account; // 账号(邮箱)
+    @JsonIgnore
     private String password;
     private String nickname; // 昵称
     private String avatar; // 头像
@@ -24,5 +26,6 @@ public class User extends BaseEntity{
 
     @Column(length = 1024)
     private String introduction; // 简介
-
+    @JsonIgnore
+    private Long sessionId; // 会话id
 }

@@ -26,6 +26,13 @@ public class VideoController {
                             @RequestParam(value = "days",required = false) String days) {
         return videoServer.videoList(name, timeLength, days);
     }
+
+    @PostMapping("/list/click")
+    public Result click(@RequestParam("id") Long id){
+        return videoServer.videoClick(id);
+    }
+
+
     @PostMapping("/add")
     @Authority(Permission.AUTHOR)
     public Result videoAdd(@RequestParam("video") MultipartFile video, @RequestParam("name") String name) {

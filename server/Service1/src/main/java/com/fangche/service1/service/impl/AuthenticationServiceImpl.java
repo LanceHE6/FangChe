@@ -29,7 +29,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String token;
         try {
             String bearer = (authorization.split(" "))[0];
-            if (!Objects.equals(bearer, "bearer")){
+            if (!Objects.equals(bearer, "Bearer") && !Objects.equals(bearer, "bearer")){
                 return -1;
             }
             token = (authorization.split(" "))[1];
@@ -41,8 +41,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (claims == null){
             return 0;
         }
-        String ip = request.getRemoteAddr();
-        if (!Objects.equals(ip, claims.get("ip", String.class))){
+        // 比较session_id
+        Long sessionId = (Long) claims.get("session_id");
+        Long uid =  (Long) claims.get("id");
+        User user =  userMapper.selectById(uid);
+        if (user == null){
+            return -1;
+        }
+        if (!Objects.equals(sessionId, user.getSessionId())){
             return -1;
         }
         return 1;
@@ -55,8 +61,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      */
     @Override
     public boolean isAuthorAuthenticate(HttpServletRequest request) {
-        if (baseAuthenticate(request) != 1){
+        System.out.println(baseAuthenticate(request));
+        if (baseAuthenticate(request) == 1){
             User user = getUser(request);
+            System.out.println(user);
             return user != null && user.getRole() > 1;
         }
         return false;
@@ -69,7 +77,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      */
     @Override
     public boolean isAdminAuthenticate(HttpServletRequest request){
-        if (baseAuthenticate(request) != 1){
+        if (baseAuthenticate(request) == 1){
             User user = getUser(request);
             return user != null && user.getRole() == 3;
         }
@@ -95,7 +103,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
         Long id = (Long) claims.get("id");
         QueryWrapper<User> wrapper = new QueryWrapper<>();
-        wrapper.eq("id", id).eq("token", token);
+        wrapper.eq("id", id);
         return this.userMapper.selectOne(wrapper);
     }
 }

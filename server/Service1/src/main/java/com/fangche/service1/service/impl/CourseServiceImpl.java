@@ -3,18 +3,29 @@ package com.fangche.service1.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fangche.service1.entity.Course;
+import com.fangche.service1.entity.CourseCollection;
 import com.fangche.service1.entity.Response;
 import com.fangche.service1.entity.User;
 import com.fangche.service1.entity.requestParam.course.CourseAddParam;
 import com.fangche.service1.entity.requestParam.course.CourseSearchParam;
+import com.fangche.service1.entity.requestParam.course.CourseSetImageParam;
+import com.fangche.service1.mapper.CourseCollectionMapper;
 import com.fangche.service1.mapper.CourseMapper;
 import com.fangche.service1.mapper.UserMapper;
 import com.fangche.service1.service.CourseService;
+import com.fangche.service1.utils.StaticResourcesUtil;
+import com.fangche.service1.utils.UserUtil;
 import com.google.gson.Gson;
 
+import com.google.gson.reflect.TypeToken;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -26,6 +37,8 @@ public class CourseServiceImpl implements CourseService {
     private CourseMapper courseMapper;
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private CourseCollectionMapper courseCollectionMapper;
     @Override
     public Response addCourse(CourseAddParam param) {
         Course newCourse = new Course();
@@ -70,6 +83,9 @@ public class CourseServiceImpl implements CourseService {
                 return new Response(400, "教师不存在", null);
             }
         }
+        if (param.getId()!= null){
+            queryWrapper.eq("id", param.getId());
+        }
         // 查询课程名称为param.getKeyword()或课程简介包含param.getKeyword()或课程章节包含param.getKeyword()的课程
         if (param.getKeyword()!= null){
             queryWrapper.and(wq-> wq.like("name", param.getKeyword()).or()
@@ -100,4 +116,93 @@ public class CourseServiceImpl implements CourseService {
         courseMapper.deleteById(id);
         return new Response(200, "删除成功", null);
     }
+    @Override
+    public Response collectCourse(Long cid, HttpServletRequest request){
+        Long uid = UserUtil.getUserIdByRequest(request);
+        // 判断collection表中是否有该用户的记录, 没有的话就插入一条,有就更新
+        QueryWrapper<CourseCollection> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("uid", uid);
+        CourseCollection  courseCollection = courseCollectionMapper.selectOne(queryWrapper);
+        if (courseCollection == null){
+            CourseCollection newCollection = new CourseCollection();
+            newCollection.setUid(uid);
+            Gson gson = new Gson();
+            // 将cid插入数组中并转化为json字符串
+            List<Long> courses = new ArrayList<>();
+            courses.add(cid);
+            String coursesJson = gson.toJson(courses);
+            newCollection.setCourses(coursesJson);
+            courseCollectionMapper.insert(newCollection);
+            return new Response(200, "收藏成功", null);
+        }
+        // 更新操作
+        // 先将json字符串转为list
+        Gson gson = new Gson();
+        List<Long> courses = gson.fromJson(courseCollection.getCourses(), new TypeToken<List<Long>>(){}.getType());
+        // 判断cid是否在list中, 不在就添加
+        if (!courses.contains(cid)){
+            courses.add(cid);
+            String coursesJson = gson.toJson(courses);
+            courseCollection.setCourses(coursesJson);
+            courseCollectionMapper.updateById(courseCollection);
+            return new Response(200, "收藏成功", null);
+        } else return new Response(400, "已收藏该课程", null);
+
+    }
+    @Override
+    public Response removeCollectCourse(Long cid, HttpServletRequest request){
+        Long uid = UserUtil.getUserIdByRequest(request);
+        // 判断collection表中是否有该用户的记录, 没有的话直接返回错误,有就更新
+        QueryWrapper<CourseCollection> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("uid", uid);
+        CourseCollection  courseCollection = courseCollectionMapper.selectOne(queryWrapper);
+        if (courseCollection == null){
+            return new Response(400, "未收藏该课程", null);
+        }
+        // 更新操作
+        // 先将json字符串转为list
+        Gson gson = new Gson();
+        List<Long> courses = gson.fromJson(courseCollection.getCourses(), new TypeToken<List<Long>>(){}.getType());
+        // 判断cid是否在list中, 不在就返回错误消息
+        if (!courses.contains(cid)){
+            return new Response(400, "未收藏该课程", null);
+        } else {
+            courses.remove(cid);
+            String coursesJson = gson.toJson(courses);
+            courseCollection.setCourses(coursesJson);
+            courseCollectionMapper.updateById(courseCollection);
+            return new Response(200, "成功取消收藏该课程", null);
+        }
+
+    }
+
+    @Override
+    public Response setCourseImage(CourseSetImageParam param) {
+        MultipartFile image = param.getImage();
+        if (image.isEmpty()) {
+            return new Response(400, "未选择文件", null);
+        }
+
+        try {
+            File filePath = StaticResourcesUtil.getCourseImagePath(image.getOriginalFilename());
+            image.transferTo(filePath);
+        } catch (IOException e) {
+            return new Response(500, "上传失败", e.getMessage());
+        }
+
+        Long id = param.getId();
+
+        // 更新数据库
+        Course course = courseMapper.selectOne(new QueryWrapper<Course>().eq("id", id));
+        course.setImage(StaticResourcesUtil.COURSE_IMAGE_UPLOAD_DIR + image.getOriginalFilename());
+        courseMapper.updateById(course);
+
+        HashMap<String, String> data = new HashMap<>();
+        data.put("id", String.valueOf(id));
+        data.put("image_name", image.getOriginalFilename());
+        data.put("path", StaticResourcesUtil.USER_AVATAR_UPLOAD_DIR + image.getOriginalFilename());
+
+        return new Response(200, "上传成功", data);
+    }
 }
+

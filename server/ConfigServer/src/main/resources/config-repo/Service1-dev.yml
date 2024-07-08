@@ -9,10 +9,10 @@ spring:
       static-locations: file:./static/
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3307/fangche?createDatabaseIfNotExist=true&serverTimezone=GMT%2B8&useSSL=true
+    url: jdbc:mysql://127.0.0.1:3306/fangche?createDatabaseIfNotExist=true&serverTimezone=GMT%2B8&useSSL=true
     #url: jdbc:mysql://100.10.10.4:3306/fangche?createDatabaseIfNotExist=true&serverTimezone=GMT%2B8&useSSL=true
     username: root
-    password: root
+    password:
   # 邮件服务
   mail:
     host: smtp.qq.com

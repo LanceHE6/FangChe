@@ -10,4 +10,5 @@ public class CourseSearchParam {
     private String category;
     private String teacher;
     private String keyword;
+    private Long id;
 }
