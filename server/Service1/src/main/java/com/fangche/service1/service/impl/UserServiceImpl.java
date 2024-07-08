@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService {
      * @return Response
      */
     @Override
-    public Response info(String authorization) {
+    public Response info(String authorization, Long id) {
         String token;
         try {
             token = (authorization.split(" "))[1];
@@ -56,7 +56,9 @@ public class UserServiceImpl implements UserService {
         if (claims == null){
             return new Response(303, "token已过期,请重新登录", null);
         }
-        Long id = (Long) claims.get("id");
+        if (id == null) {
+            id = (Long) claims.get("id");
+        }
         QueryWrapper<User> wrapper = new QueryWrapper<>();
         wrapper.eq("id", id);
         return new Response(200, "获取成功", userMapper.selectOne(wrapper));
