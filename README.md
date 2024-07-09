@@ -1,10 +1,13 @@
 <p align="center">
-	<img alt="logo" src="https://gitee.com/hycerlance/PicGo/raw/main/common/logo3.png">
+    <div style ="background-color: white">
+        <img alt="logo" src="https://gitee.com/hycerlance/PicGo/raw/main/common/logo3.png">
+	</div>
 </p>
 <h1 align="center" style="margin: 30px 0 30px; font-weight: bold;">FangChe</h1>
 <h4 align="center">基于spring+Vue3前后端分离式的在线教育平台</h4>
 
 <div align="center">
+
 ![Static Badge](https://img.shields.io/badge/Licence-MIT-blue)
 ![Static Badge](https://img.shields.io/badge/Frontend-vue-orange)
 ![Static Badge](https://img.shields.io/badge/Backend-Spring-green)
@@ -17,8 +20,6 @@
 
 
 
-
-
 ## 技术栈介绍
 
 * 前端技术栈 [Vue3](https://v3.cn.vuejs.org) + [Element-plus](https://element-plus.org/zh-CN/)+ [Vite](https://cn.vitejs.dev) 。
@@ -27,7 +28,7 @@
 
 ## 项目结构
 
-```json
+```
 FangChe
 ├─web 									# 前端文件夹
 |  ├─.gitignore
