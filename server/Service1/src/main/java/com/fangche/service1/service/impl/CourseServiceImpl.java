@@ -97,11 +97,17 @@ public class CourseServiceImpl implements CourseService {
         Page<Course> courseIPage = courseMapper.selectPage(page, queryWrapper);
         List<Course> courseList = courseIPage.getRecords();
 
+        ArrayList<HashMap<String, Object>> resultList = new  ArrayList<>();
         for (Course course : courseList) {
             System.out.println(course.getName());
+            HashMap<String, Object> result = new HashMap<>();
+            result.put("course", course);
+            result.put("collected", getCoursesCollectCount(course.getId()));
+            resultList.add(result);
+            // 获取每个课程的收藏量
         }
         HashMap<String, Object> data = new HashMap<>();
-        data.put("rows",courseList);
+        data.put("rows",resultList);
         data.put("total",courseIPage.getTotal());
         data.put("page",param.getPage());
         data.put("page_size", param.getPageSize());
@@ -227,5 +233,35 @@ public class CourseServiceImpl implements CourseService {
         List<Course> courses = courseMapper.selectBatchIds(longList);
         return new Response(200, "获取成功", courses);
     }
+
+    /**
+     *  获取课程收藏数
+     * @param cid 课程id
+     * @return 收藏数
+     */
+    private long getCoursesCollectCount(Long cid){
+        // 获取所有收藏数据
+        List<CourseCollection> collections = courseCollectionMapper.selectList(null);
+
+        // 初始化收藏量计数器
+        long collectCount = 0;
+
+        // 遍历每个用户的收藏数据
+        for (CourseCollection collection : collections) {
+            String coursesStr = collection.getCourses();
+            // 去掉方括号并分割字符串
+            String[] coursesArray = coursesStr.substring(1, coursesStr.length() - 1).split(",");
+            // 遍历每个课程ID并计数
+            for (String courseIdStr : coursesArray) {
+                long courseId = Long.parseLong(courseIdStr.trim());
+                if (courseId == cid) {
+                    collectCount++;
+                }
+            }
+        }
+
+        return collectCount;
+    }
 }
+
 
