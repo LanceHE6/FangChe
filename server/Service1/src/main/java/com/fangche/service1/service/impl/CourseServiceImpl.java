@@ -25,10 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 
 @Service
@@ -84,6 +81,10 @@ public class CourseServiceImpl implements CourseService {
             }
         }
         if (param.getId()!= null){
+            // 如果根据id来的,会更新一下访问量
+            Course course = courseMapper.selectById(param.getId());
+            course.setVisits(course.getVisits()+1);
+            courseMapper.updateById(course);
             queryWrapper.eq("id", param.getId());
         }
         // 查询课程名称为param.getKeyword()或课程简介包含param.getKeyword()或课程章节包含param.getKeyword()的课程
@@ -203,6 +204,28 @@ public class CourseServiceImpl implements CourseService {
         data.put("path", StaticResourcesUtil.USER_AVATAR_UPLOAD_DIR + image.getOriginalFilename());
 
         return new Response(200, "上传成功", data);
+    }
+
+
+    @Override
+    public Response getCollectCourses(Long id) {
+        CourseCollection collection = courseCollectionMapper.selectOne(new QueryWrapper<CourseCollection>().eq("uid", id));
+        if (collection == null || Objects.equals(collection.getCourses(), "[]")) {
+            return new Response(201, "收藏夹为空", null);
+        }
+        // 去除方括号
+        String str = collection.getCourses().substring(1, collection.getCourses().length() - 1);
+
+        // 分割字符串
+        String[] strArray = str.split(",");
+
+        // 转换为 List<Long>
+        List<Long> longList = new ArrayList<>();
+        for (String s : strArray) {
+            longList.add(Long.parseLong(s.trim()));
+        }
+        List<Course> courses = courseMapper.selectBatchIds(longList);
+        return new Response(200, "获取成功", courses);
     }
 }
 

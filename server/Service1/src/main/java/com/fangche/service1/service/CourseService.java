@@ -13,4 +13,5 @@ public interface CourseService {
     Response deleteCourse(Long cid);
     Response collectCourse(Long cid, HttpServletRequest request);
     Response removeCollectCourse(Long cid, HttpServletRequest request);
+    Response getCollectCourses(Long id);
 }
