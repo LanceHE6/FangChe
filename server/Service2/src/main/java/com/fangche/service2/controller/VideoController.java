@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 @RestController
@@ -35,7 +36,7 @@ public class VideoController {
 
     @PostMapping("/add")
     @Authority(Permission.AUTHOR)
-    public Result videoAdd(@RequestParam("video") MultipartFile video, @RequestParam("name") String name) {
+    public Result videoAdd(@RequestParam("video") MultipartFile video, @RequestParam("name") String name) throws IOException {
         return videoServer.videoAdd(video, name);
     }
 
