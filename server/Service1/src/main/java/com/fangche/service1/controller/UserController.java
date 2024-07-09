@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 
 @RestController
@@ -39,9 +40,9 @@ public class UserController {
     }
     @PostMapping("/set-avatar")
     @Authority
-    public Response setAvatar(@Valid @RequestBody UserSetAvatarParam param,
+    public Response setAvatar(MultipartFile file,
                               HttpServletRequest request) {
-        return userService.setAvatar(param.getFile(), request);
+        return userService.setAvatar(file, request);
     }
     @PutMapping("/update")
     @Authority
@@ -54,7 +55,8 @@ public class UserController {
         return userService.updateUser(param.getNickname(),
                 Integer.parseInt(param.getGender()),
                 param.getSignature(),
-                param.getIntroduction(), request);
+                param.getIntroduction(),
+                request);
     }
 
     @PostMapping("/reset-password/send-code")
@@ -64,5 +66,11 @@ public class UserController {
     @PostMapping("/reset-password/verify-code")
     public Response verifyResetPasswordCode(@Valid @RequestBody UserResetPswVerifyCodeParam param){
         return userService.verifyResetPsw(param.getAccount(), param.getNew_password(), param.getVerify_code());
+    }
+
+    @PutMapping("/password/update")
+    @Authority
+    public Response updatePassword(@Valid @RequestBody UserUpdatePasswordParam param, HttpServletRequest request) {
+        return userService.updatePassword(param, request);
     }
 }

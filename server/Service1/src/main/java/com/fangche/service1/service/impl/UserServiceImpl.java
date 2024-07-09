@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.fangche.service1.entity.Response;
 import com.fangche.service1.entity.User;
 import com.fangche.service1.entity.VerifyCode;
+import com.fangche.service1.entity.requestParam.user.UserUpdatePasswordParam;
 import com.fangche.service1.mapper.UserMapper;
 import com.fangche.service1.service.UserService;
 import com.fangche.service1.service.VerifyCodeService;
@@ -319,6 +320,18 @@ public class UserServiceImpl implements UserService {
         response.setCode(200);
         response.setMsg("重置密码成功");
         return response;
+    }
+
+    @Override
+    public Response updatePassword(UserUpdatePasswordParam param, HttpServletRequest request) {
+        Long uid = UserUtil.getUserIdByRequest(request);
+        User user = userMapper.selectById(uid);
+        if (!SaltMD5Util.verifySaltPassword(param.getOld_password(), user.getPassword())) {
+            return new Response(401, "原密码错误", null);
+        }
+        user.setPassword(SaltMD5Util.generateSaltPassword(param.getNew_password()));
+        userMapper.updateById(user);
+        return new Response(200, "密码修改成功", null);
     }
 
 }
