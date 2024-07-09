@@ -1,9 +1,7 @@
 package com.fangche.service2.Conf;
 import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
-import com.fangche.service2.Utility.SnowFlake;
 import org.apache.ibatis.reflection.MetaObject;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration

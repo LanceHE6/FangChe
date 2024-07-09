@@ -126,6 +126,4 @@ public class VideoServerImp implements VideoServer {
         return Result.error("删除失败");
     }
 
-
-
 }
