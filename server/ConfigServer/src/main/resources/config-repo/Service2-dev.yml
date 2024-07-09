@@ -1,6 +1,11 @@
 spring:
   application:
     name: Service2
+  mvc:
+    static-path-pattern: /static/**
+  web:
+    resources:
+      static-locations: file:./static/
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/fangche?createDatabaseIfNotExist=true&serverTimezone=GMT%2B8&useSSL=true

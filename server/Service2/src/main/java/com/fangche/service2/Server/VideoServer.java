@@ -6,13 +6,14 @@ import com.fangche.service2.Pojo.entity.Video;
 import org.springframework.web.multipart.MultipartFile;
 
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public interface VideoServer {
     Result videoList(String name, Long timeLength, String days);
 
-    Result videoAdd(MultipartFile video, String name);
+    Result videoAdd(MultipartFile video, String name) throws IOException;
 
     Result updateById(Long id, String name);
 
