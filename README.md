@@ -1,5 +1,5 @@
 <p align="center">
-    <div style ="backgroud-color: black">
+    <div style ="background-color: white">
         <img alt="logo" src="https://gitee.com/hycerlance/PicGo/raw/main/common/logo3.png">
 	</div>
 </p>
@@ -7,6 +7,7 @@
 <h4 align="center">基于spring+Vue3前后端分离式的在线教育平台</h4>
 
 <div align="center">
+
 ![Static Badge](https://img.shields.io/badge/Licence-MIT-blue)
 ![Static Badge](https://img.shields.io/badge/Frontend-vue-orange)
 ![Static Badge](https://img.shields.io/badge/Backend-Spring-green)
@@ -15,8 +16,6 @@
 ![Static Badge](https://img.shields.io/badge/Microservice-SpringCloud-purple)
 
 </div>
-
-
 
 
 
