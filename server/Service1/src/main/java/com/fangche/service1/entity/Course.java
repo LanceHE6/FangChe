@@ -20,4 +20,5 @@ public class Course extends BaseEntity{
     private Long teacherId; //  教师ID
     private String category; //  课程分类
     private String image; //   课程图片
+    private int visits; //  访问量
 }
