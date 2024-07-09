@@ -1,5 +1,7 @@
 <p align="center">
-	<img alt="logo" src="https://gitee.com/hycerlance/PicGo/raw/main/common/logo3.png">
+    <div style ="backgroud-color: black">
+        <img alt="logo" src="https://gitee.com/hycerlance/PicGo/raw/main/common/logo3.png">
+	</div>
 </p>
 <h1 align="center" style="margin: 30px 0 30px; font-weight: bold;">FangChe</h1>
 <h4 align="center">基于spring+Vue3前后端分离式的在线教育平台</h4>
@@ -27,7 +29,7 @@
 
 ## 项目结构
 
-```json
+```
 FangChe
 ├─web 									# 前端文件夹
 |  ├─.gitignore
