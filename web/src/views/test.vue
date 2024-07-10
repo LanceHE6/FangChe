@@ -1,8 +1,7 @@
 <script setup>
 import HeaderMenu from "@/components/HeaderMenu.vue";
 
-import {onMounted, ref,reactive} from "vue";
-import {CloseBold, Search} from "@element-plus/icons-vue";
+import {onMounted, ref} from "vue";
 import axios from "axios";
 import router from "@/router/index.js";
 
@@ -47,13 +46,6 @@ const acquireQuestion= async ()=>{
 
   }
 }
-
-// 删除
-// const deleteSubject=async (subject,event)=>{
-//   event.stopPropagation()
-//   console.log('删除')
-// }
-// 进页面时就调用获取所有测试题的函数
 onMounted(()=>
     acquireQuestion()
 )

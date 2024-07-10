@@ -28,11 +28,18 @@
               <el-col :span="6" v-for="(course, index) in courseList" :key="index">
                 <div class="course-card">
                   <el-card class="grid-content">
-                    <img src="https://naive-ui.oss-cn-beijing.aliyuncs.com/carousel-img/carousel1.jpeg" class="course-image" alt="fangche">
-                    <template #footer>{{course.name}}</template>
+                    <img :src="(course.course.image === '' || course.course.image === null ? 'https://naive-ui.oss-cn-beijing.aliyuncs.com/carousel-img/carousel1.jpeg' : axios.defaults.baseURL + course.course.image)"
+                         class="course-image" alt="fangche">
+                    <template :style="{ whiteSpace: 'nowrap' }" #footer>{{course.course.name}}
+                      <br>
+                      <el-icon><Star /></el-icon>
+                      <span style="position: relative;bottom: 1.5px;right: -5px">{{course.course.visits}}</span>
+                      <span style="margin-left: 180px"><el-icon><User /></el-icon>
+                      <span style="position: relative;bottom: 1.5px;right: -5px">{{course.collected}}</span></span>
+
+                    </template>
                   </el-card>
                 </div>
-
               </el-col>
             </el-row>
           </div>
@@ -54,7 +61,7 @@
 
 <script setup>
 import Header from "../components/HeaderMenu.vue";
-import { Search } from "@element-plus/icons-vue";
+import {Search, Star, User} from "@element-plus/icons-vue";
 import axios from "axios";
 import { onMounted, reactive, ref } from "vue";
 import { ElMessage } from "element-plus";
@@ -71,6 +78,7 @@ let queryParams = reactive({
 // 获取课程列表
 const getCourseList = async () => {
   const response = await axios.get("/api/course/search", { params: queryParams });
+  console.log('111111111111111111111111',response.data)
   if (response.data.code !== 200) {
   ElMessage.error("请求课程列表失败");
   return;
@@ -183,6 +191,9 @@ el-col {
 }
 .course-card {
   transition: all 0.3s ease;
+}
+.course-image[data-v-37ec0ed8]{
+  height: 154px;
 }
 .course-card:hover {
   transform: scale(1.05);

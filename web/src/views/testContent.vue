@@ -4,6 +4,7 @@ import {onBeforeMount, onMounted, reactive, ref} from "vue";
 import router from "@/router/index.js";
 import HeaderMenu from "@/components/HeaderMenu.vue";
 import {eventBus} from '@/utils/event-bus.js'
+import axios from "axios";
 
 const centerDialogVisible = ref(false)
 
@@ -15,7 +16,7 @@ onBeforeMount(()=>{
   const test= localStorage.getItem('subject')
 
   testContents=JSON.parse(test)
-  console.log('s',testContents)
+  console.log(testContents[0].type)
 })
 
 const cancel= async ()=>{
@@ -23,14 +24,51 @@ const cancel= async ()=>{
 }
 // 点击提交会对题目答案进行判断，出现对了几个，错了几个
 // 没做完，不对
-// const judge=async ()=>{
-//   if(radio.length===null){
-//     alert('请答题')
-//   }
-//   console.log(radio.value)
-//
-//
-// }
+const judge=async()=>{
+  centerDialogVisible.value=!centerDialogVisible
+
+  let tests=[]
+  for(let item of testContents){
+    let metaNew={}
+    metaNew=item.options
+    tests.push(metaNew)
+  }
+  console.log('news',tests)
+  console.log(radio)
+  // 判断结果出分
+
+  for(let i=0;i<radio.value.length;i++){
+    console.log(radio.value)
+
+  }
+
+
+
+
+
+  let token=localStorage.getItem('token')
+  let id=localStorage.getItem('id')
+  console.log('id',id)
+  const num = parseInt(id, 10);
+  let type=testContents[0].type
+
+  let data=new FormData()
+  data.append('uid',num)
+  data.append('type',type)
+  let res=await axios.post('/api/history/submit',data,{
+    headers:{
+      Authorization:'bearer '+token
+    }
+  })
+  console.log('res',res)
+  if(res.data.code===200){
+    alert('提交成功')
+  }
+
+  console.log(radio)
+
+
+}
 
 </script>
 

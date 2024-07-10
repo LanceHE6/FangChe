@@ -18,10 +18,10 @@ const toTest=async ()=>{
 
   <div class="all">
   <div class="left">
-    <button @click="toCourse" style="font-size: 3vh">
+    <button class="MB" @click="toCourse" style="font-size: 3vh">
       课程管理
     </button>
-    <button @click="toTest" style="margin-top: 15vh;font-size: 3vh">
+    <button class="MB" @click="toTest" style="margin-top: 15vh;font-size: 3vh">
       测评管理
     </button>
   </div>
@@ -47,6 +47,15 @@ const toTest=async ()=>{
       flex-direction: column;
       justify-content: center;
       align-items: center;
+      .MB{
+        box-shadow: 1px 2px #0056b3;
+      }
+      .MB:hover{
+        cursor: pointer;
+      }
+      .MB:active{
+        color: #0056b3;
+      }
     }
     .main{
       width: 100%;

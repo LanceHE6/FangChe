@@ -162,7 +162,10 @@ const login = async() =>{
     localStorage.setItem('token',result.data.data.token)
     ElMessage.success('登录成功')
     localStorage.setItem('token', result.data.data.token)
-    localStorage.setItem('role', result.data.data.role)
+    localStorage.setItem('role', result.data.data.user.role)
+    localStorage.setItem('id', result.data.data.user.id)
+    localStorage.setItem('password',result.data.data.user.password)
+    localStorage.setItem('account',result.data.data.user.account)
     console.log(result.data.data.token)
     await router.push("/user/one")
 
@@ -339,5 +342,8 @@ const clearRegisterData = () =>{
       justify-content: space-between;
     }
   }
+}
+.login-page[data-v-d0e06bca]{
+  width: 100vw;
 }
 </style>

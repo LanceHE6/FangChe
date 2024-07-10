@@ -1,17 +1,20 @@
 <script setup>
-import {onBeforeMount, onMounted, reactive} from "vue";
+import {onBeforeMount, reactive, ref} from "vue";
 import router from "@/router/index.js";
 
 import axios from "axios";
 import HeaderMenu from "@/components/HeaderMenu.vue";
+import {Plus} from "@element-plus/icons-vue";
 
 const errorHandler = () => true
 let user=reactive({
+  id:'',
   username:'',
   imgPath:'',
   account:'',
   identity:'',
-  gender:''
+  gender:'',
+
 })
 
 
@@ -27,59 +30,35 @@ const toChange=(ziyem)=>{
 }
 const getUserMessage=async()=>{
   const token = localStorage.getItem("token")
-  console.log(token)
   let res = await axios.get('/api/user/info',{
     headers: {
       "Authorization": 'bearer '+token,
     }
   })
-  console.log(res)
-  user.username=res.data.data.nickname;
-  user.account=res.data.data.account;
-  user.imgPath=res.data.data.avatar;
-  user.identity=res.data.data.role;
-  user.gender=res.data.data.gender;
-  console.log(user)
-}
-
-//上传头像
-// const postAvatar= async ()=>{
-//   document.querySelector('input[type="file"]').click();
-// }
-//
-// const handleFileChange = (e) => {
-//   selectedFile.value = e.target.files[0];
-//   if (selectedFile.value) {
-//     uploadImage(selectedFile.value);
-//   }
-// };
-const uploadImage = async ()=>{
-
-  const formData = new FormData();
-  formData.append('image',file)
-
-
-  const token = localStorage.getItem("token")
-
-  let res=await axios.post('/api/user/set-avatar',{
-    headers: {
-      "Authorization": "Bearer "+token,
-      formData
-    }
-  })
-  if(res.data.code===200){{
-    alert('上传成功')
-
-  }}else {
-    alert('上传失败')
+  if(res.data.code===200){
+    console.log('res',res)
+    user.username=res.data.data.nickname;
+    user.account=res.data.data.account;
+    user.imgPath=res.data.data.avatar;
+    user.identity=res.data.data.role;
+    user.gender=res.data.data.gender;
+    user.id=res.data.data.id
   }
+  console.log('user',user)
 }
+
+let token=localStorage.getItem('token')
+
+const imageUrl=ref()
+const handleAvatarSuccess = (response, uploadFile) => {
+  imageUrl.value = URL.createObjectURL(uploadFile.raw)
+  window.location.reload()
+}
+
+
 onBeforeMount(()=>{
   getUserMessage()
-      console.log("获取数据")
 }
-
-
 )
 </script>
 
@@ -87,9 +66,20 @@ onBeforeMount(()=>{
   <HeaderMenu></HeaderMenu>、
   <div class="all">
   <div class="demo-type">
-    <el-avatar @click="postAvatar" :size="100" src="{{user.imgPath}}" @error="errorHandler">
-      <input type="file" @change="handleFileChange" style="display: none">
-    </el-avatar>
+
+      <el-upload
+          :headers='{Authorization:"bearer "+token }'
+          class="avatar-uploader"
+          action="http://26.107.171.13:8080/api/user/set-avatar"
+          :show-file-list="false"
+          :on-success="handleAvatarSuccess">
+        <img v-if="imageUrl" class="avatar" />
+
+        <el-avatar :size="100" :src="axios.defaults.baseURL+'/'+user.imgPath" @error="errorHandler">
+        </el-avatar>
+      </el-upload>
+
+
     <div style=" max-width: 10vw;max-height: 4vh;margin-top: 1vh;font-size: 3vh">
       {{user.username===null?user.account:user.username}}
     </div>
@@ -97,7 +87,6 @@ onBeforeMount(()=>{
 
 
   <div class="bottom">
-<!--    <button @click="getUserMessage">获取数据</button>-->
       <el-container >
         <div class="aside">
           <div v-for="(ziyem,index) in ziyems" :key="index" @click="toChange(ziyem)">
@@ -117,16 +106,21 @@ onBeforeMount(()=>{
 
 <style scoped>
 .all{
-  padding-top: 10vh;
+  width: 100vw;
+  padding-top: 6.5vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 .demo-type{
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 100vw;
+  width: 76vw;
   height: 25vh;
-  background-color: green;
+  background-color: #c9cfd5;
 }
 .bottom{
   width: 100vw;
@@ -140,7 +134,7 @@ onBeforeMount(()=>{
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border: 0.1vw solid whitesmoke;
+  border: 0.1vw solid #c4bdbd;
   width: 18vw;
   height: 50vh;
 }
@@ -150,9 +144,15 @@ button:hover{
 }
 .right{
   width: 50vw;
-  border: 0.1vh solid whitesmoke;
+  border: 0.1vh solid #c4bdbd;
   max-height: 500vh;
   padding: 0;
   margin-left: 1vw;
+}
+.avatar-uploader{
+  border: none;
+}
+.el-container{
+  width: 76vw;
 }
 </style>

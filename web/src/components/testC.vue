@@ -38,7 +38,7 @@ onBeforeMount(()=>{
 <template>
   <div>
     <el-table :data="tableData" style="width: 100%;padding:1vh">
-      <el-table-column prop="text" label="title" width="900">
+      <el-table-column prop="text" label="题目" width="900">
 
       </el-table-column>
       <el-table-column label="删除" width="100">

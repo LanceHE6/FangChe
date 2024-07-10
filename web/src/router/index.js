@@ -43,6 +43,7 @@ const routes=[
             {path: 'testM',name: 'testM',component:()=>import('../components/testManage.vue'),},
             {path: 'courseM',name: 'course',component:()=>import('../components/course.vue'),},
             {path: 'testC',name: 'testC',component:()=>import('../components/testC.vue'),},
+            {path: 'courseC',name: 'courseC',component:()=>import('../components/courseC.vue')}
         ]
     },
 {

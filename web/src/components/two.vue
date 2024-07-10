@@ -1,51 +1,80 @@
-<script setup lang="ts">
-import { ref } from 'vue'
-import { ElMessage } from 'element-plus'
-import { Plus } from '@element-plus/icons-vue'
+<script setup>
+import {onMounted, ref} from "vue";
+import axios from "axios";
+import router from "@/router/index.js";
 
-import type { UploadProps } from 'element-plus'
+const tableData=ref([])
+let token=localStorage.getItem('token')
+let id=localStorage.getItem('id')
+const num = parseInt(id, 10);
+const clear=async ()=>{
 
-const imageUrl = ref('')
-
-const handleAvatarSuccess: UploadProps['onSuccess'] = (
-    response,
-    uploadFile
-) => {
-  imageUrl.value = URL.createObjectURL(uploadFile.raw!)
-}
-
-const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
-  if (rawFile.type !== 'image/jpeg') {
-    ElMessage.error('Avatar picture must be JPG format!')
-    return false
-  } else if (rawFile.size / 1024 / 1024 > 2) {
-    ElMessage.error('Avatar picture size can not exceed 2MB!')
-    return false
+  let res=await axios.delete('/api/history/delete',{
+    headers:{
+      Authorization:'bearer '+token
+    },
+    params:{
+      uid:num
+    }
+  })
+  console.log('删除',res)
+  if (res.data.code===200){
+    console.log('delete')
   }
-  return true
+  window.location.reload()
+}
+const acquire=async ()=>{
+  let res=await axios.get('/api/history/search',{
+    headers:{
+      Authorization:'bearer '+token
+    },
+    params:{
+      uid:num
+    }
+
+  })
+  console.log('hhhhhhhhh',res.data)
+  const responseData=res.data.data
+  // let news=[]
+  for(let item in responseData){
+    let data={}
+    console.log('item',item)
+    data["type"] = item
+    data["submit_time"] = responseData[item]
+    console.log('data',data)
+    tableData.value.push(data)
+  }
+  if (res.data.code===200){
+    console.log('add')
+  }
 }
 
 
+const jump=async ()=>{
+  await router.push('/testContent')
+  console.log('成功')
+}
+
+onMounted(()=>{
+  acquire()
+})
 </script>
 
 <template>
-  <div>
   <div class="two">
-    我的测评（{{}}）
+  <div >
+    我做过的题
+    <button class="deleteB" @click="clear">清空</button>
   </div>
 
     <div>
-      测试上传头像
-      <el-upload
-          class="avatar-uploader"
-          action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
-          :show-file-list="false"
-          :on-success="handleAvatarSuccess"
-          :before-upload="beforeAvatarUpload"
-      >
-        <img v-if="imageUrl" :src="imageUrl" class="avatar" />
-        <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
-      </el-upload>
+      <el-table :data="tableData" stripe style="width: 100%">
+        <el-table-column prop="type" label="Type" width="180" />
+        <el-table-column prop="submit_time" label="submit_time" />
+        <el-table-column>
+        <button class="reW" @click="jump">重做</button>
+        </el-table-column>
+      </el-table>
     </div>
   </div>
 
@@ -53,34 +82,38 @@ const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
 
 <style scoped>
 .two{
-  padding: 3vh;
-  font-size: 3vh;
+  padding-top: 3vh;
+  padding-left: 2vh;
+  padding-right: 2vh;
+  font-size: 2vh;
+  .deleteB{
+    position: relative;
+    left: 44vw;
+    bottom: 2vh;
+    width: 6vw;
+    height: 6vh;
+    font-size: 2vh;
+    border: none;
+    background-color: #f5f5f5;
+    color: #a50d0c;
+  }
+  .deleteB:hover{
+    cursor: pointer;
+  }
+  .deleteB:active{
+    color: #0056b3;
+  }
 }
-.avatar-uploader .avatar {
-  width: 178px;
-  height: 178px;
-  display: block;
+.reW{
+  border: none;
+  background-color: white;
+  font-size: 2vh;
 }
-</style>
-<style>
-.avatar-uploader .el-upload {
-  border: 1px dashed var(--el-border-color);
-  border-radius: 6px;
+.reW:hover{
   cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  transition: var(--el-transition-duration-fast);
+  color: red;
 }
-
-.avatar-uploader .el-upload:hover {
-  border-color: var(--el-color-primary);
-}
-
-.el-icon.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 178px;
-  height: 178px;
-  text-align: center;
+.reW:active{
+  color: #0056b3;
 }
 </style>
