@@ -1,12 +1,9 @@
 <script setup>
 
-
 </script>
 
 <template>
-
-<!--  路由的显示入口-->
-  <router-view/>
+<h1>dddddddddddddddddddddddddd</h1>
 </template>
 
 <style scoped>
