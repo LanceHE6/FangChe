@@ -23,4 +23,6 @@ public interface VideoServer {
 
 
     Result videoClick(Long id);
+
+    Result selectById(Long id);
 }

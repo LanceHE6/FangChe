@@ -26,6 +26,11 @@ public class VideoController {
         return videoServer.videoList(name, timeLength, days);
     }
 
+    @PostMapping("/search")
+    public Result searchById(@RequestParam("id") Long id){
+        return videoServer.selectById(id);
+    }
+
     @PostMapping("/list/click")
     public Result click(@RequestParam("id") Long id){
         return videoServer.videoClick(id);
