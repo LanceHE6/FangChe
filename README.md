@@ -23,7 +23,7 @@
 ## 技术栈介绍
 
 * 前端技术栈 [Vue3](https://v3.cn.vuejs.org) + [Element-plus](https://element-plus.org/zh-CN/)+ [Vite](https://cn.vitejs.dev) 。
-* 后端[Spring Boot](https://docs.spring.io/spring-boot/index.html)+[Spring Cloud](https://docs.springcloud.cc/)+[MyBatis-Plus](https://baomidou.com/)。
+* 后端[Spring Boot](https://docs.spring.io/spring-boot/index.html)+[Spring Cloud](https://docs.springcloud.cc/)+[MyBatis-Plus](https://baomidou.com/)
 * 数据库[Mysql]([MySQL](https://www.mysql.com/cn/))+[MongoDB](https://www.mongodb.com/zh-cn)。
 
 ## 项目结构
@@ -365,3 +365,63 @@ public @interface Authority {
 1. **代码整洁**：权限检查逻辑集中管理，不会分散在各个业务方法中。
 2. **灵活性高**：可以通过修改注解值快速调整权限要求，无需修改业务方法。
 3. **易于维护**：当权限逻辑发生变化时，只需修改切面或拦截器的实现，而无需修改业务方法。
+
+
+
+
+
+### 基于Mongodb的测试题文档存储
+
+```java
+    public Result addFile(MultipartFile file) {
+        if (file.isEmpty()) {
+            return Result.error("请上传文件");
+        }
+        try {
+            String str = new String(file.getBytes(), StandardCharsets.UTF_8);
+            Gson gson = new Gson();
+            QuestionDto[] questions = gson.fromJson(str, QuestionDto[].class);
+            ArrayList<QuestionDto> list = new ArrayList<>(Arrays.asList(questions));
+            mongoTemplate.insertAll(list);
+        } catch (Exception e) {
+            return Result.error("传入的不是有效的json文件");
+        }
+        return Result.success();
+    
+```
+
+传入的文件格式不限，但是内容必须是一个json格式
+
+举例：
+
+```json
+
+
+[
+    {
+        "text": "Java编程题3：以下哪个Java关键字用于声明一个接口？",  
+        "options": [
+            {  
+                "text": "A. class",  
+                "isCorrect": false  
+            },  
+            {  
+                "text": "B. interface",  
+                "isCorrect": true  
+            },  
+            {  
+                "text": "C. enum",  
+                "isCorrect": false  
+            },  
+            {  
+                "text": "D. void",  
+                "isCorrect": false  
+            }  
+        ],  
+        "correctAnswer": "B",  
+        "type": "编程"  
+    }
+] 
+//必须是以列表的形式将json对象封装进去，同时json对象的格式严格要按照例子的要求,同一个文档中的测试题，type可以不同。
+```
+
