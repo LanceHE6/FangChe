@@ -7,6 +7,7 @@ import com.fangche.service2.Pojo.dto.Result;
 import com.fangche.service2.Pojo.entity.History;
 import com.fangche.service2.Pojo.entity.Video;
 import com.fangche.service2.Server.HistoryServer;
+import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -46,7 +47,9 @@ public class HistoryServerImp implements HistoryServer {
         for(History history :list){
             map.put(history.getType(),history.getSubmitTime().toString());
         }
-        return Result.success(map);
+        Gson gson = new Gson();
+        String jsonString = gson.toJson(map);
+        return Result.success(jsonString);
     }
 
     @Override
