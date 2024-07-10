@@ -25,10 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 
 @Service
@@ -84,6 +81,10 @@ public class CourseServiceImpl implements CourseService {
             }
         }
         if (param.getId()!= null){
+            // 如果根据id来的,会更新一下访问量
+            Course course = courseMapper.selectById(param.getId());
+            course.setVisits(course.getVisits()+1);
+            courseMapper.updateById(course);
             queryWrapper.eq("id", param.getId());
         }
         // 查询课程名称为param.getKeyword()或课程简介包含param.getKeyword()或课程章节包含param.getKeyword()的课程
@@ -96,11 +97,17 @@ public class CourseServiceImpl implements CourseService {
         Page<Course> courseIPage = courseMapper.selectPage(page, queryWrapper);
         List<Course> courseList = courseIPage.getRecords();
 
+        ArrayList<HashMap<String, Object>> resultList = new  ArrayList<>();
         for (Course course : courseList) {
             System.out.println(course.getName());
+            HashMap<String, Object> result = new HashMap<>();
+            result.put("course", course);
+            result.put("collected", getCoursesCollectCount(course.getId()));
+            resultList.add(result);
+            // 获取每个课程的收藏量
         }
         HashMap<String, Object> data = new HashMap<>();
-        data.put("rows",courseList);
+        data.put("rows",resultList);
         data.put("total",courseIPage.getTotal());
         data.put("page",param.getPage());
         data.put("page_size", param.getPageSize());
@@ -204,5 +211,57 @@ public class CourseServiceImpl implements CourseService {
 
         return new Response(200, "上传成功", data);
     }
+
+
+    @Override
+    public Response getCollectCourses(Long id) {
+        CourseCollection collection = courseCollectionMapper.selectOne(new QueryWrapper<CourseCollection>().eq("uid", id));
+        if (collection == null || Objects.equals(collection.getCourses(), "[]")) {
+            return new Response(201, "收藏夹为空", null);
+        }
+        // 去除方括号
+        String str = collection.getCourses().substring(1, collection.getCourses().length() - 1);
+
+        // 分割字符串
+        String[] strArray = str.split(",");
+
+        // 转换为 List<Long>
+        List<Long> longList = new ArrayList<>();
+        for (String s : strArray) {
+            longList.add(Long.parseLong(s.trim()));
+        }
+        List<Course> courses = courseMapper.selectBatchIds(longList);
+        return new Response(200, "获取成功", courses);
+    }
+
+    /**
+     *  获取课程收藏数
+     * @param cid 课程id
+     * @return 收藏数
+     */
+    private long getCoursesCollectCount(Long cid){
+        // 获取所有收藏数据
+        List<CourseCollection> collections = courseCollectionMapper.selectList(null);
+
+        // 初始化收藏量计数器
+        long collectCount = 0;
+
+        // 遍历每个用户的收藏数据
+        for (CourseCollection collection : collections) {
+            String coursesStr = collection.getCourses();
+            // 去掉方括号并分割字符串
+            String[] coursesArray = coursesStr.substring(1, coursesStr.length() - 1).split(",");
+            // 遍历每个课程ID并计数
+            for (String courseIdStr : coursesArray) {
+                long courseId = Long.parseLong(courseIdStr.trim());
+                if (courseId == cid) {
+                    collectCount++;
+                }
+            }
+        }
+
+        return collectCount;
+    }
 }
+
 

@@ -74,4 +74,10 @@ public class CourseController {
     public Response removeCollectCourse(@PathVariable("id") Long id, HttpServletRequest request) {
         return courseService.removeCollectCourse(id, request);
     }
+
+    @GetMapping("/collect/get/{id}")
+    @Authority
+    public Response getCollectCourse(@PathVariable("id") Long id) {
+        return courseService.getCollectCourses(id);
+    }
 }

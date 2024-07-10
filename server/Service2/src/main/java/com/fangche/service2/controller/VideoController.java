@@ -1,14 +1,14 @@
 package com.fangche.service2.controller;
 
 
-import com.fangche.service1.utils.authority.Authority;
-import com.fangche.service1.utils.authority.Permission;
+
 import com.fangche.service2.Pojo.dto.Result;
 import com.fangche.service2.Server.Imp.VideoServerImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 @RestController
@@ -20,7 +20,6 @@ public class VideoController {
 
     //videoList是根据条件查询，如：发布时间查询，视频名称查询，视频时长
     @GetMapping("/list")
-    @Authority
     public Result videoList(@RequestParam(value = "name",required = false) String name,
                             @RequestParam(value = "timeLength", defaultValue = "-1") Long timeLength,
                             @RequestParam(value = "days",required = false) String days) {
@@ -34,25 +33,21 @@ public class VideoController {
 
 
     @PostMapping("/add")
-    @Authority(Permission.AUTHOR)
-    public Result videoAdd(@RequestParam("video") MultipartFile video, @RequestParam("name") String name) {
+    public Result videoAdd(@RequestParam("video") MultipartFile video, @RequestParam("name") String name) throws IOException {
         return videoServer.videoAdd(video, name);
     }
 
     @PutMapping("/put")
-    @Authority(Permission.AUTHOR)
     public Result videoAlterById(@RequestParam("id") Long id, @RequestParam("name") String name) {
         return  videoServer.updateById(id, name);
     }
 
     @DeleteMapping("/delete")
-    @Authority(Permission.AUTHOR)
     public Result deleteById(Long id) {
         return videoServer.deleteById(id);
     }
 
     @DeleteMapping("/deleteBach")
-    @Authority(Permission.AUTHOR)
     public Result deleteBach(ArrayList<Integer> list) {
         return videoServer.deleteBatchIds(list);
     }

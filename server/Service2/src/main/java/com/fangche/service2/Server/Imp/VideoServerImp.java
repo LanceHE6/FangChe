@@ -6,6 +6,7 @@ import com.fangche.service2.Mapper.VideoMapper;
 import com.fangche.service2.Pojo.dto.Result;
 import com.fangche.service2.Pojo.entity.Video;
 import com.fangche.service2.Server.VideoServer;
+import com.fangche.service2.Utility.StaticResourcesUtil;
 import jakarta.servlet.ServletOutputStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,7 @@ import static com.fangche.service2.Utility.VideoUtils.getVideoDurationInSeconds;
 @Service
 public class VideoServerImp implements VideoServer {
 
-    private static final String UPLOAD_DIR = "D:\\VideoFile";
+
 
     @Autowired
     private VideoMapper videoMapper;
@@ -48,18 +49,19 @@ public class VideoServerImp implements VideoServer {
     }
 
     @Override
-    public Result videoAdd(MultipartFile video, String name) {
+    public Result videoAdd(MultipartFile video, String name) throws IOException {
         if (video.isEmpty()) {
             return Result.error("请选择一个文件上传");
         }
         String fileName = UUID.randomUUID() + ".mp4";
-        File dest = new File(UPLOAD_DIR + File.separator + fileName);
-        String url = dest.getAbsolutePath();
+
+        File videoImagePath = StaticResourcesUtil.getVideoImagePath(fileName);
+        String url = StaticResourcesUtil.VIDEO_IMAGE_UPLOAD_DIR+fileName;
         String durationInSeconds;
         long length;
         try {
-            video.transferTo(dest);
-            durationInSeconds = String.valueOf(getVideoDurationInSeconds(dest.getAbsolutePath()));
+            video.transferTo(videoImagePath);
+            durationInSeconds = String.valueOf(getVideoDurationInSeconds(videoImagePath.getPath()));
             int dotIndex = durationInSeconds.indexOf('.');
             // 去掉小数点及其后面的部分
             String integerStr = dotIndex != -1 ? durationInSeconds.substring(0, dotIndex) : durationInSeconds;
@@ -74,6 +76,7 @@ public class VideoServerImp implements VideoServer {
         Video v = new Video();
         v.setUrl(url);
         v.setName(name);
+        v.setHits(0L);
         v.setTimeLength(length);
         int flag = videoMapper.insert(v);
 
@@ -125,7 +128,5 @@ public class VideoServerImp implements VideoServer {
         }
         return Result.error("删除失败");
     }
-
-
 
 }
