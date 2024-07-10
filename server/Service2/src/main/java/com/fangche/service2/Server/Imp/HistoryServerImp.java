@@ -47,9 +47,8 @@ public class HistoryServerImp implements HistoryServer {
         for(History history :list){
             map.put(history.getType(),history.getSubmitTime().toString());
         }
-        Gson gson = new Gson();
-        String jsonString = gson.toJson(map);
-        return Result.success(jsonString);
+
+        return Result.success(map);
     }
 
     @Override
