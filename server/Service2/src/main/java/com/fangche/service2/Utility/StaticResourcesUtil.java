@@ -5,7 +5,7 @@ import java.io.IOException;
 
 public class StaticResourcesUtil {
 
-    public static final String VIDEO_IMAGE_UPLOAD_DIR = "static/video/image/";
+    public static final String VIDEO_IMAGE_UPLOAD_DIR = "/static/video/course/";
 
     public static File getVideoImagePath(String fileName) throws IOException {
         // 获取项目根目录路径
