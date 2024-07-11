@@ -159,10 +159,17 @@ const login = async() =>{
   let result = await userLoginService(registerData.value);
   console.log(result)
   if(result.data.code == 200){
-
+    localStorage.setItem('token',result.data.data.token)
     ElMessage.success('登录成功')
-    await router.push("/")
+    localStorage.setItem('token', result.data.data.token)
+    localStorage.setItem('role', result.data.data.user.role)
+    localStorage.setItem('id', result.data.data.user.id)
+    localStorage.setItem('password',result.data.data.user.password)
+    localStorage.setItem('account',result.data.data.user.account)
+    console.log(result.data.data.token)
+    await router.push("/user/one")
 
+    console.log(result.data.data.token)
   }else{
     alert('账号或者密码错误，登录失败')
   }
@@ -335,5 +342,8 @@ const clearRegisterData = () =>{
       justify-content: space-between;
     }
   }
+}
+.login-page[data-v-d0e06bca]{
+  width: 100vw;
 }
 </style>

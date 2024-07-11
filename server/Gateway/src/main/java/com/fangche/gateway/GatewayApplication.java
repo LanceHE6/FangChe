@@ -15,16 +15,15 @@ public class GatewayApplication {
 
     // 配置网关路由
     @Bean
-    public RouteLocator service1RouteLocator(RouteLocatorBuilder builder) {
+    public RouteLocator RouteLocator(RouteLocatorBuilder builder) {
         String service1URL = "http://127.0.0.1:8081";
-        RouteLocatorBuilder.Builder routes = builder.routes();
-        routes.route("hello1", r -> r.path("/hello1").uri(service1URL));
-        routes.route("user/get/{uid}", r -> r.path("/user/get/{uid}").uri(service1URL));
+        String service2URL = "http://127.0.0.1:8082";
 
-        return routes.build();
+        return builder.routes()
+                .route("user_routes", r -> r.path("/api/user/**").uri(service1URL))
+                .route("service1_static_resources_routes", r -> r.path("/static/user/**").uri(service1URL))
+                .route("video_routes", r -> r.path("/api/video/**").uri(service2URL))
+                .build();
     }
-    @Bean
-    public RouteLocator service2RouteLocator(RouteLocatorBuilder builder) {
-        return builder.routes().route("hello2", r -> r.path("/hello2").uri("http://127.0.0.1:8082")).build();
-    }
+
 }
