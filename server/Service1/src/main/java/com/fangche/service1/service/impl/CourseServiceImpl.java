@@ -9,6 +9,7 @@ import com.fangche.service1.entity.User;
 import com.fangche.service1.entity.requestParam.course.CourseAddParam;
 import com.fangche.service1.entity.requestParam.course.CourseSearchParam;
 import com.fangche.service1.entity.requestParam.course.CourseSetImageParam;
+import com.fangche.service1.entity.requestParam.course.CourseUpdateParam;
 import com.fangche.service1.mapper.CourseCollectionMapper;
 import com.fangche.service1.mapper.CourseMapper;
 import com.fangche.service1.mapper.UserMapper;
@@ -52,6 +53,38 @@ public class CourseServiceImpl implements CourseService {
 
         courseMapper.insert(newCourse);
         return new Response(200, "课程添加成功", null);
+    }
+
+    @Override
+    public Response updateCourse(CourseUpdateParam param) {
+
+        Long cid = param.getId();
+        Course course = courseMapper.selectOne(new QueryWrapper<Course>().eq("id", cid));
+        if (course == null){
+            return new Response(404, "课程不存在", null);
+        }
+        if (!Objects.equals(param.getName(), "")) {
+            course.setName(param.getName());
+        }
+        if (!Objects.equals(param.getIntroduction(), "")) {
+            course.setIntroduction(param.getIntroduction());
+        }
+        if (!Objects.equals(param.getResources(), "")) {
+            course.setResource(param.getResources());
+        }
+        if (param.getTeacher_id()!= null){
+            course.setTeacherId(param.getTeacher_id());
+        }
+        if (!Objects.equals(param.getCategory(), "")) {
+            course.setCategory(param.getCategory());
+        }
+        if (param.getChapters() != null) {
+            String chaptersJson = new Gson().toJson(param.getChapters());
+            course.setChapters(chaptersJson);
+        }
+
+       courseMapper.updateById(course);
+        return new Response(200, "课程更新成功", null);
     }
 
     @Override
@@ -185,7 +218,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public Response setCourseImage(CourseSetImageParam param) {
-        MultipartFile image = param.getImage();
+        MultipartFile image = param.getFile();
         if (image.isEmpty()) {
             return new Response(400, "未选择文件", null);
         }

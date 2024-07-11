@@ -4,6 +4,7 @@ import com.fangche.service1.entity.Response;
 import com.fangche.service1.entity.requestParam.course.CourseAddParam;
 import com.fangche.service1.entity.requestParam.course.CourseSearchParam;
 import com.fangche.service1.entity.requestParam.course.CourseSetImageParam;
+import com.fangche.service1.entity.requestParam.course.CourseUpdateParam;
 import com.fangche.service1.service.CourseService;
 import com.fangche.service1.utils.authority.Authority;
 import com.fangche.service1.utils.authority.Permission;
@@ -11,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/course")
@@ -24,10 +26,21 @@ public class CourseController {
     }
     @PostMapping("/set-image")
     @Authority(Permission.AUTHOR)
-    public Response setCourseImage(@Valid @RequestBody CourseSetImageParam param) {
+    public Response setCourseImage(MultipartFile file,
+                                   String id
+                                   ) {
+        CourseSetImageParam param = new CourseSetImageParam();
+        param.setId(Long.valueOf(id));
+        param.setFile(file);
+        // 调用service层的方法
         return courseService.setCourseImage(param);
     }
 
+    @PutMapping("/update")
+    @Authority(Permission.AUTHOR)
+    public Response updateCourse(@Valid @RequestBody CourseUpdateParam param) {
+        return courseService.updateCourse(param);
+    }
     @GetMapping("/search")
     public Response searchCourse(@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
                                  @RequestParam(value = "page", required = false, defaultValue = "1") int page,
