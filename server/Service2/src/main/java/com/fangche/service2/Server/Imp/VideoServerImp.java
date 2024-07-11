@@ -128,6 +128,12 @@ public class VideoServerImp implements VideoServer {
         return Result.success(video) ;
     }
 
+    @Override
+    public Result searchByIds(List<Long> ids) {
+        List<Video> videos = videoMapper.selectBatchIds(ids);
+        return Result.success(videos);
+    }
+
 
     @Override
     public Result deleteById(Long id) {

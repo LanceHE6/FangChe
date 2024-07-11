@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/video")
@@ -27,6 +28,13 @@ public class VideoController {
                             @RequestParam(value = "timeLength", defaultValue = "-1") Long timeLength,
                             @RequestParam(value = "days",required = false) String days) {
         return videoServer.videoList(name, timeLength, days);
+    }
+
+
+    @GetMapping("/searchByIds")
+//    @Authority
+    public Result searchByIds(@RequestParam("ids")List<Long> ids) {
+        return videoServer.searchByIds(ids);
     }
 
     @GetMapping("/search")
