@@ -69,7 +69,7 @@ public class CourseController {
      * @param request HttpServletRequest
      * @return Response
      */
-    @PostMapping("/collect/remove/{id}")
+    @DeleteMapping("/collect/remove/{id}")
     @Authority
     public Response removeCollectCourse(@PathVariable("id") Long id, HttpServletRequest request) {
         return courseService.removeCollectCourse(id, request);
