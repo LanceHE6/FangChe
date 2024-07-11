@@ -84,7 +84,7 @@ public class VideoServerImp implements VideoServer {
         int flag = videoMapper.insert(v);
 
         if (flag == 1) {
-            return Result.success(id);
+            return Result.success(v);
         }
         return Result.error("插入失败");
     }

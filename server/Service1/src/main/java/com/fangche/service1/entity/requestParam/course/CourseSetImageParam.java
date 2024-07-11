@@ -5,6 +5,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Data
 public class CourseSetImageParam {
-    private MultipartFile image;
+    private MultipartFile file;
     private Long id;
 }
