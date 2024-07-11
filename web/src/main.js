@@ -8,7 +8,7 @@ import 'element-plus/dist/index.css'
 import Header from "@/components/Header.vue";
 import router from "./router";
 import axios from "axios";
-axios.defaults.baseURL = 'http://26.107.171.13:8080/';
+axios.defaults.baseURL = 'http://26.107.171.13:3008/';
 
 const app = createApp(App)
 app.component('Header', Header)

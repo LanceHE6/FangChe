@@ -2,12 +2,20 @@ import {createRouter,createWebHashHistory} from "vue-router";
 import main from "../views/main.vue";
 import user from "../views/userCenter.vue";
 import login from "../views/login.vue";
+import class_page from "../views/class_page.vue";
+
 
 const routes=[
     {
         path:"/",
         name:"main",
         component:main,
+
+    },
+    {
+        path: "/class_page",
+        name:"class_page",
+        component: class_page,
 
     },
     {
@@ -22,28 +30,6 @@ const routes=[
         component: login,
 
     },
-    {
-      path: "/evaluation"  ,
-        name: "evaluation",
-        component:()=>import('../views/evaluation.vue'),
-    },
-    {
-        path: "/study",
-        name: "study",
-        component: ()=>import('../views/study.vue'),
-        redirect:"/study/zaixian",
-        children:[{
-            path:'zaixian',
-            name:'zaixiankec',
-            component:()=>
-                import('../views/zaixian.vue'),
-        },
-            {
-                path: "studyPath",
-                name: "studyPath",
-                component:()=>import('../views/studyPath.vue'),
-            }]
-    }
 
 ]
 
