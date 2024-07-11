@@ -2,7 +2,7 @@ import axios from "axios";
 import querystring from "querystring";
 const request=axios.create({
     // 网络请求的公共配置
-    baseURL:'http://localhost:8080',
+    baseURL:'http://localhost:3008',
     timeout:5000
 })
 // 发送数据之前
