@@ -42,7 +42,7 @@ public class VideoController {
 
     @PostMapping("/add")
 //    @Authority(Permission.AUTHOR)
-    public Result videoAdd(@RequestParam("video") MultipartFile video, @RequestParam("name") String name) throws IOException {
+    public Result videoAdd(@RequestParam("file") MultipartFile video, @RequestParam("name") String name) throws IOException {
         return videoServer.videoAdd(video, name);
     }
 
