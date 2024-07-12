@@ -4,8 +4,8 @@ import java.io.File;
 import java.io.IOException;
 
 public class StaticResourcesUtil {
-    public static final String USER_AVATAR_UPLOAD_DIR = "static/user/avatar/";
-    public static final String COURSE_IMAGE_UPLOAD_DIR = "static/course/image/";
+    public static final String USER_AVATAR_UPLOAD_DIR = "/static/user/avatar/";
+    public static final String COURSE_IMAGE_UPLOAD_DIR = "/static/course/image/";
     public static File getUserAvatarPath(String fileName) throws IOException {
         // 获取项目根目录路径
         String baseDir = System.getProperty("user.dir");

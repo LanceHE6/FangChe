@@ -6,6 +6,7 @@ import com.fangche.service2.Mapper.VideoMapper;
 import com.fangche.service2.Pojo.dto.Result;
 import com.fangche.service2.Pojo.entity.Video;
 import com.fangche.service2.Server.VideoServer;
+import com.fangche.service2.Utility.SnowFlake;
 import com.fangche.service2.Utility.StaticResourcesUtil;
 import jakarta.servlet.ServletOutputStream;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +55,6 @@ public class VideoServerImp implements VideoServer {
             return Result.error("请选择一个文件上传");
         }
         String fileName = UUID.randomUUID() + ".mp4";
-
         File videoImagePath = StaticResourcesUtil.getVideoImagePath(fileName);
         String url = StaticResourcesUtil.VIDEO_IMAGE_UPLOAD_DIR+fileName;
         String durationInSeconds;
@@ -78,10 +78,13 @@ public class VideoServerImp implements VideoServer {
         v.setName(name);
         v.setHits(0L);
         v.setTimeLength(length);
+        SnowFlake snowFlake = new SnowFlake(1,1);
+        long id = snowFlake.nextId();
+        v.setId(id);
         int flag = videoMapper.insert(v);
 
         if (flag == 1) {
-            return Result.success();
+            return Result.success(v);
         }
         return Result.error("插入失败");
     }
@@ -117,6 +120,18 @@ public class VideoServerImp implements VideoServer {
             return  Result.success();
         }
         return Result.error("更新失败");
+    }
+
+    @Override
+    public Result selectById(Long id) {
+        Video video = videoMapper.selectById(id);
+        return Result.success(video) ;
+    }
+
+    @Override
+    public Result searchByIds(List<Long> ids) {
+        List<Video> videos = videoMapper.selectBatchIds(ids);
+        return Result.success(videos);
     }
 
 

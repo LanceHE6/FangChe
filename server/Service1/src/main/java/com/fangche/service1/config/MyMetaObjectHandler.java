@@ -19,6 +19,8 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
         this.setFieldValByName("updatedAt", new Date(), metaObject);
         this.setFieldValByName("role", 1, metaObject);
         this.setFieldValByName("gender", -1, metaObject);
+        this.setFieldValByName("resources", "[]", metaObject);
+        this.setFieldValByName("chapters", "[]", metaObject);
     }
 
     /**

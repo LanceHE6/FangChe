@@ -29,6 +29,8 @@ public class GatewayApplication {
 
                 .route("video_routes", r -> r.path("/api/video/**").uri(service2URL))
                 .route("question_routes", r -> r.path("/api/question/**").uri(service2URL))
+                .route("history_routes", r -> r.path("/api/history/**").uri(service2URL))
+                .route("video_static_resources_routes", r -> r.path("/static/video/**").uri(service2URL))
                 .build();
     }
 
