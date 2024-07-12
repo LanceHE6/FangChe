@@ -83,7 +83,7 @@ onMounted(()=>
       <el-upload
           ref="upload"
           class="upload-demo"
-          action="http://26.107.171.13:8080/api/question/add"
+          action="http://26.107.171.13:3008/api/question/add"
           :limit="2"
           :on-exceed="handleExceed"
           :auto-upload="false">

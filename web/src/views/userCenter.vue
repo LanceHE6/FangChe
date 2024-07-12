@@ -4,9 +4,10 @@ import router from "@/router/index.js";
 
 import axios from "axios";
 import HeaderMenu from "@/components/HeaderMenu.vue";
-import {Plus} from "@element-plus/icons-vue";
+import {Edit, Plus} from "@element-plus/icons-vue";
 
 const errorHandler = () => true
+const inpath='/api/user/set-avatar'
 let user=reactive({
   id:'',
   username:'',
@@ -68,15 +69,17 @@ onBeforeMount(()=>{
   <div class="demo-type">
 
       <el-upload
+          style="z-index: 30"
           :headers='{Authorization:"bearer "+token }'
           class="avatar-uploader"
-          action="http://26.107.171.13:8080/api/user/set-avatar"
+          :action=axios.defaults.baseURL+inpath
           :show-file-list="false"
           :on-success="handleAvatarSuccess">
         <img v-if="imageUrl" class="avatar" />
 
-        <el-avatar :size="100" :src="axios.defaults.baseURL+'/'+user.imgPath" @error="errorHandler">
+        <el-avatar :size="100" :src="axios.defaults.baseURL+user.imgPath" @error="errorHandler">
         </el-avatar>
+        <el-icon class="icon"><Edit /></el-icon>
       </el-upload>
 
 
@@ -141,6 +144,7 @@ onBeforeMount(()=>{
 button:hover{
   cursor: pointer;
   background-color: #e0e0e0;
+
 }
 .right{
   width: 50vw;
@@ -154,5 +158,15 @@ button:hover{
 }
 .el-container{
   width: 76vw;
+}
+.icon{
+  font-size: 4vh;
+  position: absolute;
+  top: 17.5vh;
+  z-index: 0;
+  color: red;
+}
+.icon:hover{
+  z-index: 300;
 }
 </style>

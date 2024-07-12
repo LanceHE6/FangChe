@@ -3,7 +3,6 @@
 import {onBeforeMount, onMounted, reactive, ref} from "vue";
 import router from "@/router/index.js";
 import HeaderMenu from "@/components/HeaderMenu.vue";
-import {eventBus} from '@/utils/event-bus.js'
 import axios from "axios";
 
 const centerDialogVisible = ref(false)
