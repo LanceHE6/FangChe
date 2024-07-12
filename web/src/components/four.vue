@@ -85,5 +85,6 @@ const formLabelWidth = '140px'
 <style scoped>
 .four{
   padding: 3vh;
+  color: black;
 }
 </style>
