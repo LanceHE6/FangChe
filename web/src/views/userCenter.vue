@@ -79,7 +79,7 @@ onBeforeMount(()=>{
 
         <el-avatar :size="100" :src="axios.defaults.baseURL+user.imgPath" @error="errorHandler">
         </el-avatar>
-        <el-icon class="icon"><Edit /></el-icon>
+
       </el-upload>
 
 
