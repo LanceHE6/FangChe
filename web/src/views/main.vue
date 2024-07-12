@@ -33,9 +33,9 @@
                     <template :style="{ whiteSpace: 'nowrap' }" #footer>{{course.course.name}}
                       <br>
                       <el-icon><Star /></el-icon>
-                      <span style="position: relative;bottom: 1.5px;right: -5px">{{course.course.visits}}</span>
+                      <span style="position: relative;bottom: 1.5px;right: -5px">{{course.collected}}</span>
                       <span style="margin-left: 180px"><el-icon><User /></el-icon>
-                      <span style="position: relative;bottom: 1.5px;right: -5px">{{course.collected}}</span></span>
+                      <span style="position: relative;bottom: 1.5px;right: -5px">{{course.course.visits}}</span></span>
 
                     </template>
                   </el-card>
