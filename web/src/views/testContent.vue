@@ -4,6 +4,8 @@ import {onBeforeMount, onMounted, reactive, ref} from "vue";
 import router from "@/router/index.js";
 import HeaderMenu from "@/components/HeaderMenu.vue";
 import axios from "axios";
+import {ElMessage} from "element-plus";
+
 
 const centerDialogVisible = ref(false)
 
@@ -61,7 +63,8 @@ const judge=async()=>{
   })
   console.log('res',res)
   if(res.data.code===200){
-    alert('提交成功')
+    ElMessage.success("提交成功")
+    await router.push('/test')
   }
 
   console.log(radio)

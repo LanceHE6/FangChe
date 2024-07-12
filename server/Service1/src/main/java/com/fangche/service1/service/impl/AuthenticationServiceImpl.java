@@ -29,25 +29,34 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String token;
         try {
             String bearer = (authorization.split(" "))[0];
-            if (!Objects.equals(bearer, "bearer")){
+            if (!Objects.equals(bearer, "Bearer") && !Objects.equals(bearer, "bearer")){
+                System.out.println("非法token");
                 return -1;
             }
             token = (authorization.split(" "))[1];
         } catch (Exception e) {
+            System.out.println("非法token");
             return -1;
         }
         Claims claims = JWTUtil.getClaimsFromJwt(token);
         // token过期
         if (claims == null){
+            System.out.println("token已过期");
             return 0;
         }
-        Long id = (Long) claims.get("id");
-        QueryWrapper<User> wrapper = new QueryWrapper<>();
-        wrapper.eq("id", id).eq("token", token);
-        User user = this.userMapper.selectOne(wrapper);
-        if (user == null) {
+        // 比较session_id
+        Long sessionId = (Long) claims.get("session_id");
+        Long uid =  (Long) claims.get("id");
+        User user =  userMapper.selectById(uid);
+        if (user == null){
+            System.out.println("用户: " + uid + " 不存在");
             return -1;
         }
+        if (!Objects.equals(sessionId, user.getSessionId())){
+            System.out.println("用户: "+ uid + " 登录失效");
+            return -1;
+        }
+        System.out.println("用户: " + uid + " 通过认证");
         return 1;
     }
 
@@ -58,8 +67,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      */
     @Override
     public boolean isAuthorAuthenticate(HttpServletRequest request) {
-        if (baseAuthenticate(request) != 1){
+        System.out.println(baseAuthenticate(request));
+        if (baseAuthenticate(request) == 1){
             User user = getUser(request);
+            System.out.println(user);
             return user != null && user.getRole() > 1;
         }
         return false;
@@ -72,7 +83,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      */
     @Override
     public boolean isAdminAuthenticate(HttpServletRequest request){
-        if (baseAuthenticate(request) != 1){
+        if (baseAuthenticate(request) == 1){
             User user = getUser(request);
             return user != null && user.getRole() == 3;
         }
@@ -98,7 +109,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
         Long id = (Long) claims.get("id");
         QueryWrapper<User> wrapper = new QueryWrapper<>();
-        wrapper.eq("id", id).eq("token", token);
+        wrapper.eq("id", id);
         return this.userMapper.selectOne(wrapper);
     }
 }

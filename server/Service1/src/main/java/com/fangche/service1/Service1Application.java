@@ -1,13 +1,13 @@
 package com.fangche.service1;
 
 import com.tangzc.mpe.autotable.EnableAutoTable;
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 @SpringBootApplication
 @EnableAutoTable
-@MapperScan("com.fangche.service1.mapper")
+@EnableDiscoveryClient
 public class Service1Application {
 
 	public static void main(String[] args) {
