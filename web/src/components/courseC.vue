@@ -7,6 +7,7 @@ const search = ref();
 const dialogVisible = ref(false)
 const tableData=ref([])
 let video=ref([])
+const Tid=ref()
 let token=localStorage.getItem('token');
 let newName=ref()
 // 查询
@@ -43,28 +44,44 @@ const searchC=async ()=>{
     video.value=res.data.data
   }
 }
-
 }
 // 删除
-const handleDelete = (index) => {
+const handleDelete = async (index) => {
 
+  console.log('222222222222',tableData._rawValue)
+  console.log('Tid',Number(Tid.value))
+  let res=await axios.delete('/api/video/delete',{
+    headers:{
+      Authorization:"Bearer "+token
+    },
+    params:{
+      id:tableData._rawValue[index]
+    }
+  })
+  console.log(res)
+  if(res.data.code===200){
+    console.log('成功')
+    tableData._rawValue=tableData._rawValue.splice(index,1)
+    console.log(tableData._rawValue)
+    // update()
 
+  }
 
-
-
-  update(index)
 };
 // 更新
 
-const update=async (index)=>{
-  let res=await axios.put('/api/course/update',{id:tableData._rawValue[index.value].id,
-    resources:JSON.stringify( tableData._rawValue[index.value].resource)
+const update=async ()=>{
+  let res=await axios.put('/api/course/update',{id:Tid.value,
+    resources:JSON.stringify( tableData._rawValue)
   },{
     headers:{
       Authorization:"Bearer "+token
     }
   })
   console.log('333333333333333333',res)
+  if(res.data.code===200){
+    console.log('更新成功')
+  }
 }
 
 
@@ -85,22 +102,20 @@ const change=async (index)=>{
 
   }
 
-
 }
 // 从local中获取
 const acquireVideo=async()=>{
   video.value=JSON.parse(localStorage.getItem('video'))
+  tableData.value=JSON.parse(localStorage.getItem('tableDate'))
+  Tid.value=localStorage.getItem('Tid')
+
 }
-
-
-
-
-
 
 
 
 onBeforeMount(()=>{
   acquireVideo()
+
 })
 
 
@@ -136,9 +151,6 @@ onBeforeMount(()=>{
 
             </template>
           </el-dialog>
-
-
-
 
           <el-button
               size="small"
