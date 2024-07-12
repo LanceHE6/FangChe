@@ -150,6 +150,7 @@ onMounted(()=>{
   font-size: 3vh;
   width: 100%;
   max-height:100vh ;
+  color: black;
 }
 .writeText{
   padding-left: 2.5vw;
