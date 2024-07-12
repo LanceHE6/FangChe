@@ -1,12 +1,17 @@
 import {createRouter,createWebHashHistory} from "vue-router";
 import main from "../views/main.vue";
+import course from  "../views/course.vue"
 
 const routes=[
     {
         path:"/",
         name:"main",
         component:main,
-
+    },
+    {
+        path: "/courseDetail",
+        name:"CourseDetail",
+        component:course
     },
     {
         path: "/user",

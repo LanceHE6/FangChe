@@ -80,7 +80,7 @@ onBeforeMount(()=>{
       </el-upload>
 
 
-    <div style=" max-width: 10vw;max-height: 4vh;margin-top: 1vh;font-size: 3vh">
+    <div style=" max-width: 10vw;max-height: 4vh;margin-top: 1vh;font-size: 3vh; color: black">
       {{user.username===null?user.account:user.username}}
     </div>
   </div>

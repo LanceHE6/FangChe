@@ -27,15 +27,15 @@
             <el-row :gutter="20">
               <el-col :span="6" v-for="(course, index) in courseList" :key="index">
                 <div class="course-card">
-                  <el-card class="grid-content">
+                  <el-card class="grid-content" @click="clickCard(course.course.id)">
                     <img :src="(course.course.image === '' || course.course.image === null ? 'https://naive-ui.oss-cn-beijing.aliyuncs.com/carousel-img/carousel1.jpeg' : axios.defaults.baseURL + course.course.image)"
                          class="course-image" alt="fangche">
                     <template :style="{ whiteSpace: 'nowrap' }" #footer>{{course.course.name}}
                       <br>
                       <el-icon><Star /></el-icon>
-                      <span style="position: relative;bottom: 1.5px;right: -5px">{{course.course.visits}}</span>
+                      <span style="position: relative;bottom: 1.5px;right: -5px">{{course.collected}}</span>
                       <span style="margin-left: 180px"><el-icon><User /></el-icon>
-                      <span style="position: relative;bottom: 1.5px;right: -5px">{{course.collected}}</span></span>
+                      <span style="position: relative;bottom: 1.5px;right: -5px">{{course.course.visits}}</span></span>
 
                     </template>
                   </el-card>
@@ -66,6 +66,7 @@ import axios from "axios";
 import { onMounted, reactive, ref } from "vue";
 import { ElMessage } from "element-plus";
 import Footer from "@/components/Footer.vue";
+import router from "@/router/index.js";
 
 let courseList = ref([]);
 let total = ref(0);
@@ -111,6 +112,10 @@ const handlePageChange = (page) => {
   queryParams.page = page;
   getCourseList();
 };
+
+const clickCard = async (id) => {
+  await router.push(`courseDetail?cid=${id}`)
+}
 </script>
 
 <style scoped>
@@ -204,6 +209,7 @@ el-col {
   border-radius: 4px;
   min-height: 36px;
   margin-top: 40px;
+  cursor: pointer;
 }
 .pagination {
   display: flex;

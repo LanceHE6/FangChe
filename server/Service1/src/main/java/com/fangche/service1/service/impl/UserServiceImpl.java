@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.fangche.service1.entity.Response;
 import com.fangche.service1.entity.User;
 import com.fangche.service1.entity.VerifyCode;
+import com.fangche.service1.entity.requestParam.user.UserUpdatePasswordParam;
 import com.fangche.service1.mapper.UserMapper;
 import com.fangche.service1.service.UserService;
 import com.fangche.service1.service.VerifyCodeService;
@@ -45,7 +46,7 @@ public class UserServiceImpl implements UserService {
      * @return Response
      */
     @Override
-    public Response info(String authorization) {
+    public Response info(String authorization, Long id) {
         String token;
         try {
             token = (authorization.split(" "))[1];
@@ -56,9 +57,11 @@ public class UserServiceImpl implements UserService {
         if (claims == null){
             return new Response(303, "token已过期,请重新登录", null);
         }
-        Long id = (Long) claims.get("id");
+        if (id == null) {
+            id = (Long) claims.get("id");
+        }
         QueryWrapper<User> wrapper = new QueryWrapper<>();
-        wrapper.eq("id", id).eq("token", token);
+        wrapper.eq("id", id);
         return new Response(200, "获取成功", userMapper.selectOne(wrapper));
     }
 
@@ -149,20 +152,23 @@ public class UserServiceImpl implements UserService {
      * @return Response
      */
     @Override
-    public Response login(String account, String password) {
+    public Response login(String account, String password, HttpServletRequest request) {
         User user = userMapper.selectOne(new QueryWrapper<User>().eq("account", account));
-        if (!SaltMD5Util.verifySaltPassword(password, user.getPassword())) {
+        if (user==null || !SaltMD5Util.verifySaltPassword(password, user.getPassword())) {
             return new Response(400, "账号或密码错误", null);
         }
+        // 时间戳作为sessionId
+        user.setSessionId(System.currentTimeMillis());
         String token = JWTUtil.generateJwtToken(user);
-        user.setToken(token);
-
+        // 更新sessionId
         userMapper.updateById(user);
-
         Response response = new Response();
         response.setCode(200);
         response.setMsg("登录成功");
-        response.setData(user);
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("token", token);
+        data.put("user", user);
+        response.setData(data);
         return response;
     }
 
@@ -234,7 +240,7 @@ public class UserServiceImpl implements UserService {
             user.setIntroduction(introduction);
         }
         userMapper.updateById(user);
-        user.setToken(null);
+
         return new Response(200, "更新成功", user);
     }
 
@@ -284,7 +290,7 @@ public class UserServiceImpl implements UserService {
     public Response verifyResetPsw(String account, String password, String verifyCode) {
         // 验证验证码
         VerifyCode code = verifyCodeService.selectByAccount(account);
-        if (code == null || code.isUsed() ||!code.getCode().equals(verifyCode)) {
+        if (code == null || code.isUsed() || !code.getCode().equals(verifyCode)) {
             return new Response(400, "验证码错误", null);
         }
         // 获取当前时间
@@ -314,6 +320,18 @@ public class UserServiceImpl implements UserService {
         response.setCode(200);
         response.setMsg("重置密码成功");
         return response;
+    }
+
+    @Override
+    public Response updatePassword(UserUpdatePasswordParam param, HttpServletRequest request) {
+        Long uid = UserUtil.getUserIdByRequest(request);
+        User user = userMapper.selectById(uid);
+        if (!SaltMD5Util.verifySaltPassword(param.getOld_password(), user.getPassword())) {
+            return new Response(401, "原密码错误", null);
+        }
+        user.setPassword(SaltMD5Util.generateSaltPassword(param.getNew_password()));
+        userMapper.updateById(user);
+        return new Response(200, "密码修改成功", null);
     }
 
 }
